@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html lang="zh-CN" class="theme-dark">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>ModelScope 学习中心 // STUDY STATION</title>
+  <link rel="stylesheet" href="css/style.css" />
+</head>
+<body class="theme-dark">
+
+  <!-- ============ GRAIN + AURORA OVERLAY ============ -->
+  <div class="bg-aurora" aria-hidden="true"></div>
+  <div class="bg-grain" aria-hidden="true"></div>
+  <div class="bg-grid" aria-hidden="true"></div>
+
+  <!-- ============ TOP BAR ============ -->
+  <header class="topbar">
+    <div class="topbar-left">
+      <button id="sidebar-toggle" class="icon-btn hamburger" aria-label="切换目录">
+        <span></span><span></span><span></span>
+      </button>
+      <div class="brand">
+        <div class="brand-mark">
+          <svg viewBox="0 0 32 32" width="28" height="28" aria-hidden="true">
+            <defs>
+              <linearGradient id="brandGrad" x1="0" y1="0" x2="1" y2="1">
+                <stop offset="0%" stop-color="#7c3aed"/>
+                <stop offset="55%" stop-color="#06b6d4"/>
+                <stop offset="100%" stop-color="#84cc16"/>
+              </linearGradient>
+            </defs>
+            <circle cx="16" cy="16" r="13" fill="none" stroke="url(#brandGrad)" stroke-width="2.2"/>
+            <circle cx="16" cy="16" r="4.5" fill="url(#brandGrad)"/>
+            <line x1="16" y1="0" x2="16" y2="6" stroke="url(#brandGrad)" stroke-width="2"/>
+            <line x1="16" y1="26" x2="16" y2="32" stroke="url(#brandGrad)" stroke-width="2"/>
+          </svg>
+        </div>
+        <div class="brand-text">
+          <div class="brand-title">ModelScope 学习中心</div>
+          <div class="brand-sub">STUDY · STATION / v1.0</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="topbar-center">
+      <div class="search-shell">
+        <svg class="search-icon" viewBox="0 0 24 24" width="16" height="16" aria-hidden="true">
+          <circle cx="11" cy="11" r="7" fill="none" stroke="currentColor" stroke-width="2"/>
+          <line x1="16.5" y1="16.5" x2="21" y2="21" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+        </svg>
+        <input id="global-search" type="text" placeholder="搜索章节 · 关键词 · 内容…" autocomplete="off" />
+        <kbd class="kbd">⌘ K</kbd>
+        <div id="search-results" class="search-results" hidden></div>
+      </div>
+    </div>
+
+    <div class="topbar-right">
+      <div class="progress-ring" title="总进度">
+        <svg viewBox="0 0 44 44" width="44" height="44">
+          <defs>
+            <linearGradient id="ringGrad" x1="0" y1="0" x2="1" y2="1">
+              <stop offset="0%" stop-color="#7c3aed"/>
+              <stop offset="50%" stop-color="#06b6d4"/>
+              <stop offset="100%" stop-color="#84cc16"/>
+            </linearGradient>
+          </defs>
+          <circle cx="22" cy="22" r="18" fill="none" stroke="rgba(255,255,255,0.08)" stroke-width="3"/>
+          <circle id="ring-progress" cx="22" cy="22" r="18" fill="none" stroke="url(#ringGrad)" stroke-width="3"
+                  stroke-linecap="round" stroke-dasharray="113.1" stroke-dashoffset="113.1" transform="rotate(-90 22 22)"/>
+        </svg>
+        <div class="ring-label"><span id="progress-percent">0</span><i>%</i></div>
+      </div>
+
+      <div class="timer-shell" title="学习计时">
+        <div class="timer-led"></div>
+        <div class="timer-stack">
+          <div class="timer-now" id="timer-session">00:00:00</div>
+          <div class="timer-total" id="timer-total">累计 0h 0m</div>
+        </div>
+      </div>
+
+      <button id="theme-toggle" class="icon-btn theme-btn" aria-label="切换主题">
+        <svg class="theme-ic-moon" viewBox="0 0 24 24" width="18" height="18">
+          <path d="M21 12.79A9 9 0 1 1 11.21 3a7 7 0 0 0 9.79 9.79z" fill="currentColor"/>
+        </svg>
+        <svg class="theme-ic-sun" viewBox="0 0 24 24" width="18" height="18">
+          <circle cx="12" cy="12" r="4" fill="currentColor"/>
+          <g stroke="currentColor" stroke-width="2" stroke-linecap="round">
+            <line x1="12" y1="2" x2="12" y2="5"/><line x1="12" y1="19" x2="12" y2="22"/>
+            <line x1="2" y1="12" x2="5" y2="12"/><line x1="19" y1="12" x2="22" y2="12"/>
+            <line x1="4.5" y1="4.5" x2="6.7" y2="6.7"/><line x1="17.3" y1="17.3" x2="19.5" y2="19.5"/>
+            <line x1="4.5" y1="19.5" x2="6.7" y2="17.3"/><line x1="17.3" y1="6.7" x2="19.5" y2="4.5"/>
+          </g>
+        </svg>
+      </button>
+    </div>
+  </header>
+
+  <!-- ============ MAIN 3-COLUMN LAYOUT ============ -->
+  <main class="layout">
+
+    <!-- LEFT: TOC -->
+    <aside class="sidebar" id="sidebar">
+      <div class="sidebar-head">
+        <div class="meta-line"><span class="dot"></span><span>CURRICULUM · INDEX</span></div>
+        <h2 class="sidebar-title">课程目录</h2>
+        <div class="sidebar-stats">
+          <div><b id="stat-total">0</b><span>章节</span></div>
+          <div><b id="stat-done">0</b><span>已完成</span></div>
+          <div><b id="stat-progress">0</b><span>学习中</span></div>
+        </div>
+      </div>
+      <div class="toc-tabs">
+        <button class="toc-tab active" data-view="module">按模块</button>
+        <button class="toc-tab" data-view="phase">按阶段</button>
+      </div>
+      <nav class="toc" id="toc-tree" aria-label="课程目录"></nav>
+      <div class="sidebar-foot">
+        <span class="legend"><i class="lg-pending"></i>未开始</span>
+        <span class="legend"><i class="lg-progress"></i>学习中</span>
+        <span class="legend"><i class="lg-done"></i>已完成</span>
+      </div>
+    </aside>
+
+    <!-- CENTER: READER -->
+    <section class="reader" id="reader">
+      <div class="reader-rail" aria-hidden="true">
+        <div class="rail-tick"></div><div class="rail-tick"></div><div class="rail-tick"></div>
+      </div>
+
+      <article class="reader-inner" id="reader-inner">
+        <!-- WELCOME / EMPTY STATE -->
+        <div class="welcome" id="welcome-screen">
+          <div class="welcome-tag">// WELCOME · 0x01</div>
+          <h1 class="welcome-title">
+            为机器学习工程师打造的<br/>
+            <em>学习作战指挥所</em>
+          </h1>
+          <p class="welcome-lead">
+            从大模型基础到 AIGC 实战，从 Transformer 内部到训练推理优化 ——
+            一站式追踪你的学习进度、笔记与时间投入。
+          </p>
+
+          <div class="welcome-grid">
+            <div class="wcard">
+              <div class="wcard-num">01</div>
+              <div class="wcard-title">三大模块</div>
+              <div class="wcard-desc">大模型教程 · LLM-tutorial · AIGC-tutorial 全覆盖</div>
+            </div>
+            <div class="wcard">
+              <div class="wcard-num">02</div>
+              <div class="wcard-title">进度追踪</div>
+              <div class="wcard-desc">章节级状态机 · 自动持久化到本地存储</div>
+            </div>
+            <div class="wcard">
+              <div class="wcard-num">03</div>
+              <div class="wcard-title">笔记 + 计时</div>
+              <div class="wcard-desc">每章独立笔记 · 学习时长沉淀</div>
+            </div>
+            <div class="wcard">
+              <div class="wcard-num">04</div>
+              <div class="wcard-title">全文搜索</div>
+              <div class="wcard-desc">⌘K 即刻定位 · 标题与正文双索引</div>
+            </div>
+          </div>
+
+          <div class="welcome-cta">
+            <span class="cta-arrow">←</span>
+            <span>从左侧目录开启你的第一章</span>
+          </div>
+        </div>
+
+        <!-- ACTUAL CHAPTER CONTENT -->
+        <div class="chapter-view" id="chapter-view" hidden>
+          <div class="chapter-meta" id="chapter-meta"></div>
+          <div class="markdown-body" id="markdown-body"></div>
+        </div>
+      </article>
+    </section>
+
+    <!-- RIGHT: PANEL -->
+    <aside class="panel" id="panel">
+      <div class="panel-block status-block">
+        <div class="block-tag">// STATUS</div>
+        <div class="status-current" id="status-current">未选择章节</div>
+        <div class="status-buttons" id="status-buttons">
+          <button data-status="pending" class="status-btn">⭕ 未开始</button>
+          <button data-status="in_progress" class="status-btn">🟡 学习中</button>
+          <button data-status="completed" class="status-btn">✅ 已完成</button>
+        </div>
+      </div>
+
+      <div class="panel-block info-block" id="info-block" style="display:none">
+        <div class="block-tag">// CHAPTER · INFO</div>
+        <dl class="info-list" id="info-list">
+          <dt>难度</dt><dd>—</dd>
+          <dt>建议时长</dt><dd>—</dd>
+          <dt>所属周</dt><dd>—</dd>
+          <dt>阶段</dt><dd>—</dd>
+        </dl>
+        <div class="info-tags" id="info-tags"></div>
+      </div>
+
+      <div class="panel-block keypoints-block">
+        <div class="block-tag">// KEY POINTS</div>
+        <div id="key-points-list">
+          <p class="no-points">暂无核心知识点</p>
+        </div>
+      </div>
+
+      <div class="panel-block notes-block">
+        <div class="notes-collapse">
+          <button class="notes-toggle" id="notes-toggle">个人笔记 ▸</button>
+          <div class="notes-content" id="notes-content" style="display:none;">
+            <div class="notes-head">
+              <span>本章笔记</span>
+              <span class="save-hint" id="save-hint">·</span>
+            </div>
+            <textarea id="notes-area" placeholder="在这里写下你对本章的理解、问题与灵感…"></textarea>
+            <button class="ghost-btn" id="notes-save">💾 立即保存</button>
+          </div>
+        </div>
+      </div>
+    </aside>
+  </main>
+
+  <!-- mobile mask -->
+  <div class="mask" id="sidebar-mask"></div>
+
+  <!-- ============ SCRIPTS ============ -->
+  <script src="js/markdown.js"></script>
+  <script src="js/data-llm.js"></script>
+  <script src="js/data-aigc.js"></script>
+  <script src="js/data-advanced-01.js"></script>
+  <script src="js/data-advanced-02.js"></script>
+  <script src="js/data-advanced-03.js"></script>
+  <script src="js/data-notebooks-aigc.js"></script>
+  <script src="js/data-notebooks-llm.js"></script>
+  <script src="js/data-blogs.js"></script>
+  <script src="js/key-points.js"></script>
+  <script src="js/app.js"></script>
+</body>
+</html>

@@ -1,0 +1,526 @@
+{
+  "llm-a-deep-learning": [
+    "理解监督学习、无监督学习与强化学习的本质区别",
+    "掌握神经网络的前向传播与反向传播原理",
+    "理解过拟合、欠拟合及对应的正则化、早停等解决方法",
+    "掌握梯度下降算法及 SGD/Adam 等优化器差异",
+    "理解深度学习相对传统机器学习的特征自动提取优势"
+  ],
+  "llm-b-llm-basics": [
+    "理解大语言模型的预训练-微调-对齐三阶段范式",
+    "掌握 Decoder-only、Encoder-only、Encoder-Decoder 架构区别",
+    "理解 Token、词表、Embedding 的基本概念",
+    "掌握 Scaling Law 与模型参数/数据/算力的关系",
+    "了解 GPT、LLaMA、Qwen 等主流模型的演进脉络",
+    "理解涌现能力与上下文学习（ICL）的现象"
+  ],
+  "llm-c-prompt-engineering": [
+    "掌握 Zero-shot、Few-shot、Chain-of-Thought 三种提示范式",
+    "理解 System Prompt 与 User Prompt 的分工与编写技巧",
+    "掌握角色扮演、任务分解、格式约束等提示工程方法",
+    "了解 Self-Consistency、Tree-of-Thought 等推理增强技术",
+    "能编写结构化 Prompt 解决分类、抽取、生成等任务"
+  ],
+  "llm-d-transformer": [
+    "掌握 Self-Attention 的 Q/K/V 计算过程与缩放点积公式",
+    "理解 Multi-Head Attention 的并行机制与多视角语义建模",
+    "掌握旋转位置编码 RoPE 的作用与外推优势",
+    "理解 RMSNorm 相比 LayerNorm 的简化与稳定性",
+    "区分 Dense 与 MoE 稀疏激活模型的架构差异",
+    "理解 FFN（SwiGLU）层在 Transformer 中的非线性角色",
+    "掌握 Causal Mask 在自回归生成中的作用"
+  ],
+  "llm-e-tech-selection": [
+    "掌握闭源 API 与开源自部署模型的选型权衡",
+    "理解不同参数规模（7B/14B/72B）模型的能力与成本对比",
+    "掌握按任务类型（对话/Agent/代码/多模态）选择模型的依据",
+    "了解 Qwen、LLaMA、DeepSeek、GLM 等主流系列特点",
+    "理解上下文长度、推理速度、显存占用的工程权衡"
+  ],
+  "llm-f-data-preprocessing": [
+    "掌握 SFT、DPO、Pretrain 三类训练数据的格式要求",
+    "理解 ChatML、Alpaca、ShareGPT 等数据模板差异",
+    "掌握数据清洗、去重、质量过滤的常用方法",
+    "理解数据配比（通用+领域）对微调效果的影响",
+    "能使用 ms-swift/LLaMA-Factory 完成数据集注册与转换"
+  ],
+  "llm-g-quantization": [
+    "理解 FP32/FP16/BF16/INT8/INT4 数值精度差异",
+    "掌握 GPTQ、AWQ、GGUF 三种量化方案适用场景",
+    "理解 PTQ 训练后量化与 QAT 量化感知训练区别",
+    "了解量化对显存占用、推理速度、精度损失的影响",
+    "能为部署场景选择合适的量化方案与位宽"
+  ],
+  "llm-h-training": [
+    "掌握全参微调、LoRA、QLoRA、LongLoRA 的原理与显存对比",
+    "理解 LoRA 低秩分解 W=W₀+BA 的数学原理",
+    "掌握学习率、batch size、epoch 等关键超参的调优策略",
+    "理解 DeepSpeed ZeRO 1/2/3 阶段的显存优化机制",
+    "掌握梯度累积、梯度检查点等显存优化技巧",
+    "能使用 ms-swift 完成单卡/多卡微调任务"
+  ],
+  "llm-i-inference": [
+    "掌握自回归生成的 Prefill 与 Decode 两阶段过程",
+    "理解 KV Cache 缓存键值对加速推理的原理",
+    "掌握 Greedy、Beam Search、Top-k/Top-p、Temperature 解码策略",
+    "理解 Batch 推理与流式输出的实现方式",
+    "了解 vLLM、TGI 等推理框架的性能优化点"
+  ],
+  "llm-j-deployment": [
+    "掌握 OpenAI 兼容 API 服务部署流程",
+    "理解 vLLM、SGLang、Ollama、llama.cpp 部署方案差异",
+    "掌握模型量化与显存预估方法",
+    "理解吞吐量、首 token 延迟、并发数等关键指标",
+    "能完成模型服务化并对接前端应用"
+  ],
+  "llm-k-evaluation": [
+    "理解客观评测（MMLU/CEval/GSM8K）与主观评测差异",
+    "掌握 EvalScope、OpenCompass 评测框架使用",
+    "理解人工评测、模型评测（LLM-as-a-Judge）方法",
+    "掌握领域评测集构建与指标设计原则",
+    "能针对自定义任务搭建评测 pipeline"
+  ],
+  "llm-l-lisa": [
+    "理解 LISA（Layerwise Importance Sampling）层重要性采样原理",
+    "掌握 LISA 相比 LoRA 的显存与效果优势",
+    "理解每次只激活部分层进行训练的机制",
+    "了解 LISA 在长文本与大模型微调中的应用场景",
+    "能在 ms-swift 中启用 LISA 训练模式"
+  ],
+  "llm-m-alignment": [
+    "理解 RLHF 三阶段：SFT、奖励模型、PPO 强化学习",
+    "掌握 DPO 直接偏好优化的损失函数与免奖励模型优势",
+    "理解 PPO 中策略梯度、价值函数、KL 约束的角色",
+    "掌握 KTO、ORPO、SimPO 等新型对齐算法思路",
+    "理解奖励 hacking 与对齐税（Alignment Tax）问题",
+    "能构建偏好数据集并完成 DPO 训练"
+  ],
+  "llm-n-quantization-deep": [
+    "掌握 GPTQ 基于 Hessian 矩阵的逐层量化原理",
+    "理解 AWQ 激活感知权重量化的核心思想",
+    "掌握 SmoothQuant 平滑激活异常值的方法",
+    "理解混合精度量化与 outlier 处理策略",
+    "能对比不同量化方法在精度与速度上的表现"
+  ],
+  "llm-o-agent-fabric": [
+    "理解 Agent 的感知-规划-行动闭环架构",
+    "掌握 Modelscope Agent Fabric 平台的组件构成",
+    "理解工具调用（Function Calling）与 ReAct 范式",
+    "掌握多 Agent 协作与任务编排机制",
+    "能基于 Agent Fabric 搭建端到端智能体应用"
+  ],
+  "llm-p-playground": [
+    "掌握 ModelScope Playground 在线推理与对比能力",
+    "理解 Gradio/Streamlit 快速构建模型 Demo 的方法",
+    "掌握模型在线托管与 API 调用流程",
+    "能搭建可视化的多模型对话体验环境"
+  ],
+  "llm-q-reasoning": [
+    "理解 OpenAI o1、DeepSeek-R1 推理模型的长思维链范式",
+    "掌握 Test-time Compute Scaling 推理时算力扩展思想",
+    "理解过程奖励模型（PRM）与结果奖励模型（ORM）区别",
+    "掌握自我反思、自我修正等推理增强技术",
+    "了解推理模型在数学、代码、科学任务上的表现"
+  ],
+  "llm-s-ppo-grpo": [
+    "掌握 PPO 中 Actor-Critic 框架与 Clip 目标函数",
+    "理解 GAE 广义优势估计对方差-偏差的权衡",
+    "掌握 GRPO 去 Critic、组内归一化的简化设计",
+    "理解 GRPO 相比 PPO 的显存与训练效率优势",
+    "了解 DeepSeek-R1 中 GRPO 的应用与改进",
+    "能在 ms-swift 中配置 GRPO 训练流程"
+  ],
+  "aigc-transformers-diffusion": [
+    "掌握 Transformer 自注意力在多模态生成中的应用",
+    "理解扩散模型（Diffusion）的加噪-去噪过程",
+    "掌握 Text-to-Image、Text-to-Video 的统一建模思路",
+    "了解 DiT 用 Transformer 替代 U-Net 的架构演进",
+    "理解 VAE 编码器在 Latent Diffusion 中的作用"
+  ],
+  "adv-01-02-supervised-concept": [
+    "理解监督学习的样本-标签数据范式",
+    "掌握分类与回归任务的本质区别",
+    "理解训练集、验证集、测试集的划分原则",
+    "掌握模型假设空间与归纳偏置的概念"
+  ],
+  "adv-01-03-dataset": [
+    "理解数据集质量对模型效果的决定性作用",
+    "掌握数据采集、清洗、标注的全流程",
+    "理解 IID 独立同分布假设与数据偏差",
+    "掌握公开数据集（ImageNet/COCO 等）与自建数据集的使用"
+  ],
+  "adv-01-04-ml-dl-rl": [
+    "区分机器学习、深度学习、强化学习三大范式",
+    "理解机器学习需要人工特征工程，深度学习自动学习特征",
+    "掌握强化学习的智能体-环境-奖励交互框架",
+    "理解三者在数据需求、可解释性上的差异"
+  ],
+  "adv-01-05-regression-clustering": [
+    "掌握线性回归、逻辑回归的目标函数与适用场景",
+    "理解 K-Means、DBSCAN 等聚类算法原理",
+    "掌握距离度量（欧氏、余弦）在聚类中的应用",
+    "理解监督回归与无监督聚类的本质差异"
+  ],
+  "adv-02-03-least-squares": [
+    "掌握最小二乘法 minimize Σ(y-ŷ)² 的数学推导",
+    "理解正规方程闭式解 w=(XᵀX)⁻¹Xᵀy",
+    "掌握梯度下降迭代求解最小二乘问题",
+    "理解最小二乘法的几何投影意义"
+  ],
+  "adv-02-04-overfit-underfit": [
+    "理解过拟合的高方差与欠拟合的高偏差表现",
+    "掌握偏差-方差权衡（Bias-Variance Tradeoff）",
+    "理解训练误差与验证误差曲线的诊断方法",
+    "掌握增加数据、简化模型、正则化等过拟合应对策略"
+  ],
+  "adv-02-05-generalization": [
+    "理解泛化能力的核心定义：未见数据上的表现",
+    "掌握 VC 维、Rademacher 复杂度等泛化理论",
+    "理解经验风险最小化与结构风险最小化",
+    "掌握交叉验证评估泛化能力的方法"
+  ],
+  "adv-02-06-loss-regularization": [
+    "掌握 MSE、Cross-Entropy、Hinge 等常用损失函数",
+    "理解 L1（Lasso）与 L2（Ridge）正则化的几何意义",
+    "掌握 L1 稀疏性与 L2 平滑性的区别",
+    "理解 Dropout、BatchNorm 等隐式正则化方法"
+  ],
+  "adv-02-07-gradient-descent": [
+    "掌握梯度下降 w←w-η∇L 的更新公式",
+    "理解 BGD、SGD、Mini-batch GD 的差异",
+    "掌握 Momentum、Adam、AdamW 等优化器原理",
+    "理解学习率调度（Warmup、Cosine）对训练的影响"
+  ],
+  "adv-03-05-transformer": [
+    "掌握 Transformer 编码器-解码器整体架构",
+    "理解 Self-Attention 取代 RNN 解决长距离依赖",
+    "掌握 Multi-Head Attention 的多视角语义聚合",
+    "理解残差连接与 LayerNorm 对深层训练的稳定作用",
+    "掌握 Position-wise FFN 的逐位置非线性变换"
+  ],
+  "adv-03-06-tokenization": [
+    "掌握 BPE、WordPiece、SentencePiece 分词算法原理",
+    "理解子词切分如何平衡词表大小与 OOV 问题",
+    "掌握特殊 Token（[CLS]/[SEP]/<s>/</s>）的作用",
+    "理解中英文混合、代码场景下的分词差异",
+    "了解 Tiktoken 等 BPE 实现的高效性"
+  ],
+  "adv-03-07-embedding": [
+    "理解 Token Embedding 将离散 token 映射为稠密向量",
+    "掌握 Word2Vec、GloVe 等静态词向量原理",
+    "理解上下文相关 Embedding（如 BERT）的优势",
+    "掌握 Embedding 维度选择与共享权重技巧"
+  ],
+  "adv-03-08-positional-encoding": [
+    "理解 Transformer 无位置感知需引入位置编码",
+    "掌握正弦/余弦绝对位置编码的公式与外推性",
+    "掌握 RoPE 旋转位置编码的复数旋转原理",
+    "理解 ALiBi 相对位置偏置的线性距离衰减",
+    "对比绝对、相对、旋转位置编码的优缺点"
+  ],
+  "adv-03-09-activation": [
+    "掌握 ReLU、GELU、SwiGLU 激活函数公式",
+    "理解 ReLU 死亡神经元与 GELU 平滑性优势",
+    "掌握 SwiGLU 在 LLaMA 系列中的应用",
+    "理解激活函数对梯度传播与表达能力的影响"
+  ],
+  "adv-03-10-regularization-residual": [
+    "掌握残差连接 y=F(x)+x 缓解梯度消失",
+    "理解 LayerNorm 与 RMSNorm 的归一化差异",
+    "掌握 Pre-Norm 与 Post-Norm 的稳定性对比",
+    "理解 Dropout 在 Transformer 中的位置与作用"
+  ],
+  "adv-03-11-attention": [
+    "掌握 Attention(Q,K,V)=softmax(QKᵀ/√d)V 公式",
+    "理解 Scaled Dot-Product Attention 缩放因子作用",
+    "掌握 Multi-Head Attention 的并行投影机制",
+    "理解 MHA、MQA、GQA 三种注意力变体的 KV 共享策略",
+    "掌握 Flash Attention 的 IO 优化思想"
+  ],
+  "adv-03-12-moe": [
+    "理解 MoE 稀疏激活降低计算量的核心思想",
+    "掌握 Top-K 路由门控网络的实现",
+    "理解负载均衡损失（Load Balance Loss）作用",
+    "掌握专家并行与路由策略的工程实现",
+    "了解 Mixtral、DeepSeek-MoE 的架构特点"
+  ],
+  "adv-03-13-multimodal": [
+    "理解多模态模型的视觉编码器+LLM 桥接架构",
+    "掌握 CLIP 对比学习的图文对齐原理",
+    "理解 BLIP、LLaVA、Qwen-VL 的视觉指令微调思路",
+    "掌握 ViT 将图像切 patch 输入 Transformer 的方法",
+    "了解视频、语音等多模态扩展方向"
+  ],
+  "adv-04-02-vae": [
+    "理解 VAE 编码器-解码器+隐变量分布的生成框架",
+    "掌握 ELBO 证据下界的重构损失+KL 散度形式",
+    "理解重参数化技巧 z=μ+σ⊙ε 解决采样不可导",
+    "掌握 VAE 与 AE 在隐空间分布约束上的区别",
+    "理解 VAE 在 Latent Diffusion 中作为压缩器的角色"
+  ],
+  "adv-04-03-gan": [
+    "理解 GAN 生成器与判别器的对抗博弈机制",
+    "掌握 minimax 目标函数与纳什均衡概念",
+    "理解模式崩溃（Mode Collapse）与训练不稳定问题",
+    "掌握 DCGAN、WGAN、StyleGAN 等改进方案",
+    "对比 GAN 与扩散模型在质量、多样性上的差异"
+  ],
+  "adv-04-04-ddpm": [
+    "掌握 DDPM 前向加噪 q(xₜ|xₜ₋₁) 马尔可夫过程",
+    "理解反向去噪 pθ(xₜ₋₁|xₜ) 的高斯参数化",
+    "掌握噪声预测网络 εθ 的训练目标 L=‖ε-εθ‖²",
+    "理解时间步 t 的 Embedding 注入方式",
+    "掌握 DDIM 加速采样的确定性轨迹原理"
+  ],
+  "adv-04-05-diffusion-arch": [
+    "理解 U-Net 在扩散模型中的对称跳跃连接结构",
+    "掌握 DiT 用 Transformer 替代 U-Net 的设计",
+    "理解 Latent Diffusion 在 VAE 隐空间扩散降低成本",
+    "掌握 Cross-Attention 注入文本条件的实现",
+    "了解 Stable Diffusion、SDXL、Flux 的架构演进"
+  ],
+  "adv-04-06-common-tech": [
+    "掌握 Classifier-Free Guidance（CFG）无分类器引导原理",
+    "理解 ControlNet 通过零卷积注入空间条件",
+    "掌握 LoRA 在扩散模型上的低秩微调应用",
+    "理解 IP-Adapter、T2I-Adapter 等图像条件注入方法",
+    "了解 Flow Matching、Consistency Model 等新型生成范式"
+  ],
+  "adv-05-02-policy-value": [
+    "理解策略 π(a|s) 与价值 V(s)/Q(s,a) 的核心定义",
+    "掌握 Bellman 方程的递归形式",
+    "理解 On-Policy 与 Off-Policy 算法的区别",
+    "掌握价值迭代、策略迭代的求解流程",
+    "理解策略梯度定理 ∇J=E[∇logπ·Q] 的推导"
+  ],
+  "adv-05-03-gae": [
+    "理解优势函数 A(s,a)=Q(s,a)-V(s) 的物理意义",
+    "掌握 GAE 广义优势估计 λ-return 的公式",
+    "理解 GAE 在偏差-方差之间的权衡作用",
+    "掌握 TD-error 累积构造 GAE 的实现",
+    "了解 GAE 在 PPO 训练中的关键作用"
+  ],
+  "adv-05-04-value-based-policy-based": [
+    "区分 Value-based（DQN）与 Policy-based（REINFORCE）方法",
+    "理解 Actor-Critic 融合两类方法的优势",
+    "掌握 Q-Learning 的 max 操作与策略隐式表达",
+    "理解策略梯度对连续动作空间的天然支持",
+    "对比两类方法在样本效率与稳定性上的差异"
+  ],
+  "adv-05-05-off-policy": [
+    "理解 Off-Policy 用行为策略采样、目标策略学习",
+    "掌握重要性采样修正分布差异的方法",
+    "理解 Replay Buffer 在 Off-Policy 中的作用",
+    "对比 On-Policy（PPO）与 Off-Policy（DQN）样本效率",
+    "了解 PPO Clip 限制策略更新的动机"
+  ],
+  "adv-06-02-prefill-decode": [
+    "理解 LLM 推理的 Prefill 阶段并行处理 Prompt",
+    "理解 Decode 阶段逐 token 自回归生成",
+    "掌握 Prefill 计算密集、Decode 访存密集的特性",
+    "理解首 token 延迟（TTFT）与吞吐量指标差异",
+    "掌握 Chunked Prefill 优化思想"
+  ],
+  "adv-06-03-kvcache": [
+    "理解 KV Cache 缓存历史 Key/Value 避免重复计算",
+    "掌握 KV Cache 显存占用公式 2·L·B·H·d·precision",
+    "理解 KV Cache 量化（INT8/FP8）的压缩方案",
+    "掌握 MQA、GQA 通过共享 KV 头降低缓存的设计",
+    "了解 KV Cache 卸载与分层存储优化"
+  ],
+  "adv-06-04-decoding-strategy": [
+    "掌握 Greedy Search 贪心选择最大概率 token",
+    "理解 Beam Search 维护 top-k 路径的束搜索",
+    "掌握 Temperature 温度系数调节概率分布平滑度",
+    "理解 Top-k 与 Top-p（Nucleus）截断采样方法",
+    "掌握 Speculative Decoding 投机采样加速原理"
+  ],
+  "adv-06-05-pagedattention": [
+    "理解 PagedAttention 借鉴 OS 分页管理 KV Cache",
+    "掌握 KV Block 分块存储消除显存碎片",
+    "理解 Block Table 映射逻辑块到物理块的机制",
+    "掌握 PagedAttention 支持 prefix sharing 的优势",
+    "了解 vLLM 中 PagedAttention 的吞吐提升效果"
+  ],
+  "adv-06-06-continuousbatching": [
+    "理解 Continuous Batching 动态加入/移除请求",
+    "对比 Static Batching 必须等齐 batch 的浪费",
+    "掌握 iteration-level 调度的 GPU 利用率提升",
+    "理解 Continuous Batching 与 PagedAttention 的协同",
+    "了解 vLLM、TGI 中 Continuous Batching 的实现"
+  ],
+  "adv-11-02-prompt-engineering": [
+    "掌握 Few-shot、CoT、Self-Consistency 等高级提示技巧",
+    "理解结构化输出（JSON Mode）与函数调用提示设计",
+    "掌握 Prompt 模板化与变量替换工程实践",
+    "理解提示注入攻击与防御策略",
+    "能针对复杂任务设计多步骤提示流水线"
+  ],
+  "adv-11-03-dataset-stage": [
+    "理解预训练、SFT、RLHF 三阶段数据需求差异",
+    "掌握不同阶段数据质量、多样性、规模要求",
+    "理解 SFT 数据的指令-响应对格式",
+    "掌握偏好数据（chosen/rejected）构造方法",
+    "能为不同训练阶段设计数据采集与过滤策略"
+  ],
+  "adv-11-04-training-issues": [
+    "掌握 Loss 不下降、爆炸、震荡的常见原因诊断",
+    "理解灾难性遗忘（Catastrophic Forgetting）问题",
+    "掌握梯度裁剪、学习率调整等训练稳定技巧",
+    "理解 OOM 显存溢出的优化路径",
+    "能定位与解决微调中的过拟合、欠拟合问题"
+  ],
+  "adv-13-01-intro": [
+    "理解 Agent 智能体的自主决策与工具使用能力",
+    "掌握 Agent 相比纯 LLM 的多步推理与环境交互优势",
+    "理解 LLM-as-Brain 的 Agent 核心架构",
+    "了解 Agent 在客服、编程、数据分析等场景的应用"
+  ],
+  "adv-13-02-agent-history": [
+    "了解从 Expert System 到 LLM Agent 的演进脉络",
+    "理解 AutoGPT、BabyAGI 等早期 Agent 的设计",
+    "掌握 ReAct、Reflexion 等推理-行动范式发展",
+    "了解 Multi-Agent（AutoGen、MetaGPT）协作趋势"
+  ],
+  "adv-13-03-low-code-platform": [
+    "理解 Dify、Coze、FastGPT 等低代码 Agent 平台特点",
+    "掌握可视化工作流编排（节点拖拽）的构建方式",
+    "理解知识库、工具、模型三大组件的配置",
+    "能用低代码平台快速搭建 RAG 与 Agent 应用"
+  ],
+  "adv-13-04-react": [
+    "掌握 ReAct 范式 Thought-Action-Observation 循环",
+    "理解推理与行动交替进行的优势",
+    "掌握 ReAct Prompt 模板的设计要点",
+    "理解 ReAct 在工具调用场景的应用",
+    "对比 ReAct 与 CoT、Plan-and-Execute 的差异"
+  ],
+  "adv-13-05-memory-retrieval": [
+    "理解 Agent 短期记忆（对话历史）与长期记忆设计",
+    "掌握向量检索（Embedding+VectorDB）作为长期记忆的方法",
+    "理解 MemGPT 分层记忆管理思想",
+    "掌握记忆遗忘、压缩、摘要等机制",
+    "能为 Agent 设计可持久化的记忆系统"
+  ],
+  "adv-13-10-rag": [
+    "理解 RAG 检索增强生成的索引-检索-生成流程",
+    "掌握文档切分（Chunking）策略与重叠窗口",
+    "理解 Embedding 模型选型与向量数据库（Faiss/Milvus）",
+    "掌握 Hybrid Search、Rerank 提升检索质量的方法",
+    "理解 RAG 缓解幻觉与知识更新的优势",
+    "能搭建端到端 RAG 问答系统"
+  ],
+  "nb-aigc-vit-bestpractice": [
+    "能使用 ViT 完成图像分类微调任务",
+    "掌握 ViT 将图像切 patch 输入 Transformer 的流程",
+    "能在 ModelScope 上加载预训练 ViT 模型",
+    "掌握图像数据增强与训练参数配置"
+  ],
+  "nb-aigc-vivit-bestpractice": [
+    "能使用 ViViT 完成视频分类任务",
+    "理解 ViViT 时空注意力的因式分解设计",
+    "掌握视频帧采样与预处理流程",
+    "能完成 ViViT 的微调与推理部署"
+  ],
+  "nb-aigc-patch": [
+    "理解 Patch Embedding 将图像/视频转 token 序列的原理",
+    "掌握 patch_size 选择对计算量与性能的影响",
+    "能实现自定义 Patch Embedding 模块",
+    "理解 Patch 在 ViT、DiT、MAE 等模型中的统一作用"
+  ],
+  "nb-llm-openvino": [
+    "能使用 OpenVINO 完成 LLM 的 CPU/iGPU 推理部署",
+    "掌握 OpenVINO IR 模型转换流程",
+    "能对 LLM 进行 INT8/INT4 量化加速",
+    "了解 OpenVINO 在边缘设备的优化优势"
+  ],
+  "nb-llm-rag-llamaindex": [
+    "能使用 LlamaIndex 搭建 RAG 知识问答应用",
+    "掌握文档加载器（DirectoryReader）与节点解析",
+    "能配置 Embedding 模型与向量索引",
+    "掌握 Query Engine 检索增强查询流程",
+    "能集成 ModelScope LLM 与 LlamaIndex"
+  ],
+  "nb-llm-vlmevalkit": [
+    "能使用 VLMEvalKit 评测多模态大模型",
+    "掌握主流 VLM 评测集（MMBench、MMMU 等）使用",
+    "能对接 Qwen-VL、LLaVA 等模型完成评测",
+    "掌握评测结果分析与可视化"
+  ],
+  "nb-llm-dify": [
+    "能使用 Dify 平台快速搭建 LLM 应用",
+    "掌握 Dify 中 Workflow、Agent、知识库的配置",
+    "能将本地或 ModelScope 模型接入 Dify",
+    "掌握 Dify 应用发布与 API 调用"
+  ],
+  "nb-llm-llama-factory": [
+    "能使用 LLaMA-Factory 完成 LoRA/QLoRA 微调",
+    "掌握 WebUI 可视化训练配置流程",
+    "能注册自定义数据集并完成训练",
+    "掌握模型导出、合并、量化的全流程",
+    "理解 LLaMA-Factory 支持的训练算法（SFT/DPO/PPO）"
+  ],
+  "nb-llm-llamacpp": [
+    "能使用 llama.cpp 完成 GGUF 模型 CPU 推理",
+    "掌握 HF/Safetensors 模型转 GGUF 的流程",
+    "能进行 Q4_K_M、Q8_0 等量化方案选择",
+    "能编译 llama.cpp 并启动 OpenAI 兼容服务",
+    "理解 llama.cpp 在低资源设备的优势"
+  ],
+  "nb-llm-nexa": [
+    "能使用 Nexa SDK 在端侧部署多模态模型",
+    "掌握 Nexa 对 GGUF、ONNX 等格式的统一支持",
+    "能完成本地推理服务的启动与调用",
+    "了解 Nexa 在桌面 Agent 场景的应用"
+  ],
+  "nb-llm-unsloth": [
+    "能使用 Unsloth 完成 2-5x 加速的高效微调",
+    "理解 Unsloth 自定义 Triton kernel 的加速原理",
+    "掌握 Unsloth + LoRA/QLoRA 的训练配置",
+    "能完成 4-bit 量化微调以降低显存",
+    "了解 Unsloth 对长上下文训练的支持"
+  ],
+  "nb-llm-vllm": [
+    "能使用 vLLM 部署高吞吐 LLM 推理服务",
+    "掌握 vLLM 启动 OpenAI 兼容 API 的参数",
+    "理解 PagedAttention 与 Continuous Batching 加速原理",
+    "能配置 tensor parallel 多卡推理",
+    "掌握 vLLM 性能调优（max_model_len、gpu_memory_utilization）"
+  ],
+  "nb-llm-zhihu-train": [
+    "能完成「知乎风格回答生成」的端到端微调任务",
+    "掌握知乎问答数据的爬取与清洗流程",
+    "能配置 SFT 训练参数生成风格化回答",
+    "理解领域风格迁移类微调的关键技巧"
+  ],
+  "nb-llm-quick-train": [
+    "能 10 分钟内完成首个 LLM 微调任务",
+    "掌握 ms-swift 一键 LoRA 微调命令",
+    "能完成数据准备、训练、推理的最小闭环",
+    "理解快速验证微调可行性的标准流程"
+  ],
+  "nb-llm-self-cognition": [
+    "能微调模型修改其自我认知（如「我是谁」回答）",
+    "掌握自我认知数据集的构造方法",
+    "理解少量数据即可改写模型身份的原理",
+    "能完成自我认知微调并验证效果"
+  ],
+  "blog-articles-all2all-survey": [
+    "理解 Any-to-Any 全模态模型的统一架构思想",
+    "掌握主流全模态模型（GPT-4o、Gemini）的能力对比",
+    "理解多模态统一表征与跨模态对齐技术",
+    "了解全模态模型在交互式 AI 中的发展趋势"
+  ],
+  "blog-daily-agent-lightning": [
+    "理解 Agent Lightning 框架的轻量化 Agent 设计",
+    "掌握 Agent Lightning 的核心组件与使用方式",
+    "了解其在快速原型开发中的优势",
+    "理解轻量 Agent 框架的工程取舍"
+  ],
+  "blog-daily-dinov3": [
+    "理解 DINOv3 自监督视觉表征学习的最新进展",
+    "掌握 DINOv3 相比 DINOv2 的改进点",
+    "理解自监督预训练在通用视觉任务上的优势",
+    "了解 DINOv3 在下游任务（分类、检测、分割）的应用"
+  ]
+}
