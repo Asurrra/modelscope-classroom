@@ -83,7 +83,7 @@ LLM 推理分为两个截然不同的阶段：
     },
     {
       id: "adv-06-02-prefill-decode",
-      title: "6.2 6.1 Prefill 与 Decode",
+      title: "6.1 Prefill 与 Decode",
       file: "大模型教程/06-模型推理优化/01-Prefill与Decode.md",
       difficulty: "中级-高级",
       duration: "0.5h",
@@ -370,7 +370,7 @@ graph LR
     },
     {
       id: "adv-06-03-kvcache",
-      title: "6.3 6.2 KV Cache",
+      title: "6.2 KV Cache",
       file: "大模型教程/06-模型推理优化/02-KVCache.md",
       difficulty: "中级-高级",
       duration: "0.5h",
@@ -674,7 +674,7 @@ GQA 在质量和效率之间取得了很好的平衡，被 LLaMA-2、Mistral 等
     },
     {
       id: "adv-06-04-decoding-strategy",
-      title: "6.4 6.3 解码策略",
+      title: "6.3 解码策略",
       file: "大模型教程/06-模型推理优化/03-解码策略.md",
       difficulty: "中级-高级",
       duration: "0.5h",
@@ -1009,7 +1009,7 @@ MTP 解码可以视为**自投机**：模型自己既是 draft 也是 target。
     },
     {
       id: "adv-06-05-pagedattention",
-      title: "6.5 6.4 Paged Attention",
+      title: "6.4 Paged Attention",
       file: "大模型教程/06-模型推理优化/04-PagedAttention.md",
       difficulty: "中级-高级",
       duration: "0.5h",
@@ -1317,7 +1317,7 @@ KV Cache 量化（INT8/INT4）与 Paged Attention 正交：
     },
     {
       id: "adv-06-06-continuousbatching",
-      title: "6.6 6.5 Continuous Batching",
+      title: "6.5 Continuous Batching",
       file: "大模型教程/06-模型推理优化/05-ContinuousBatching.md",
       difficulty: "中级-高级",
       duration: "0.5h",
@@ -1713,7 +1713,7 @@ SGLang 在 Continuous Batching 基础上优化了编程接口：
     },
     {
       id: "adv-07-02-flashattention",
-      title: "7.2 7.1 Flash Attention",
+      title: "7.1 Flash Attention",
       file: "大模型教程/07-模型并行训练与优化/01-FlashAttention.md",
       difficulty: "中级-高级",
       duration: "0.5h",
@@ -1998,7 +1998,7 @@ Flash Attention 在性能上通常更优，但 xFormers 仍是重要的备选。
     },
     {
       id: "adv-07-03-triton",
-      title: "7.3 7.2 Triton 优化与算子融合",
+      title: "7.2 Triton 优化与算子融合",
       file: "大模型教程/07-模型并行训练与优化/02-Triton优化与算子融合.md",
       difficulty: "中级-高级",
       duration: "0.5h",
@@ -2322,7 +2322,7 @@ def benchmark(N, provider):
     },
     {
       id: "adv-07-04-sec-03",
-      title: "7.4 7.3 数据并行",
+      title: "7.3 数据并行",
       file: "大模型教程/07-模型并行训练与优化/03-数据并行.md",
       difficulty: "中级-高级",
       duration: "1h",
@@ -2675,7 +2675,7 @@ optimizer.step()
     },
     {
       id: "adv-07-05-sec-04",
-      title: "7.5 7.4 张量并行",
+      title: "7.4 张量并行",
       file: "大模型教程/07-模型并行训练与优化/04-张量并行.md",
       difficulty: "中级-高级",
       duration: "0.5h",
@@ -2943,7 +2943,7 @@ FSDP 可以在 TP 之上进一步切分：
     },
     {
       id: "adv-07-06-sec-05",
-      title: "7.6 7.5 流水线并行",
+      title: "7.5 流水线并行",
       file: "大模型教程/07-模型并行训练与优化/05-流水线并行.md",
       difficulty: "中级-高级",
       duration: "0.5h",
@@ -3218,7 +3218,7 @@ GLOBAL_BATCH_SIZE = 512
     },
     {
       id: "adv-07-07-sec-06",
-      title: "7.7 7.6 专家并行",
+      title: "7.6 专家并行",
       file: "大模型教程/07-模型并行训练与优化/06-专家并行.md",
       difficulty: "中级-高级",
       duration: "0.5h",
@@ -3523,7 +3523,7 @@ moe_layer = MoE(
     },
     {
       id: "adv-07-08-sec-07",
-      title: "7.8 7.7 序列并行与上下文并行",
+      title: "7.7 序列并行与上下文并行",
       file: "大模型教程/07-模型并行训练与优化/07-序列并行与上下文并行.md",
       difficulty: "中级-高级",
       duration: "0.5h",
@@ -3818,7 +3818,7 @@ Mask:     Prevent cross-sequence attention
     },
     {
       id: "adv-07-09-sec-08",
-      title: "7.9 7.8 多维并行",
+      title: "7.8 多维并行",
       file: "大模型教程/07-模型并行训练与优化/08-多维并行.md",
       difficulty: "中级-高级",
       duration: "1h",
@@ -4208,7 +4208,7 @@ AI for Science 与大语言模型正在融合：
     },
     {
       id: "adv-08-02-alphafold",
-      title: "8.2 8.1 AlphaFold：蛋白质结构预测",
+      title: "8.1 AlphaFold：蛋白质结构预测",
       file: "大模型教程/08-AI-for-Science/01-AlphaFold.md",
       difficulty: "中级-高级",
       duration: "0.5h",

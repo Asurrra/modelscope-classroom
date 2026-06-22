@@ -51,7 +51,7 @@ window.LEARNING_DATA.push({
     },
     {
       id: "adv-01-02-supervised-concept",
-      title: "1.2 1.1 有监督和无监督学习的概念",
+      title: "1.1 有监督和无监督学习的概念",
       file: "大模型教程/01-有监督学习和无监督学习/01-有监督和无监督学习的概念.md",
       difficulty: "入门",
       duration: "0.5h",
@@ -261,7 +261,7 @@ $$\\mathbb{E}[(f(x) - y)^2] = \\text{Bias}^2 + \\text{Variance} + \\text{Irreduc
     },
     {
       id: "adv-01-03-dataset",
-      title: "1.3 1.2 数据集的概念和含义",
+      title: "1.2 数据集的概念和含义",
       file: "大模型教程/01-有监督学习和无监督学习/02-数据集的概念和含义.md",
       difficulty: "入门",
       duration: "0.5h",
@@ -565,7 +565,7 @@ $$x' = \\frac{x - x_{\\min}}{x_{\\max} - x_{\\min}}$$
     },
     {
       id: "adv-01-04-ml-dl-rl",
-      title: "1.4 1.3 机器学习、深度学习、强化学习",
+      title: "1.3 机器学习、深度学习、强化学习",
       file: "大模型教程/01-有监督学习和无监督学习/03-机器学习深度学习强化学习.md",
       difficulty: "入门",
       duration: "0.5h",
@@ -901,7 +901,7 @@ $$\\text{机器学习} = \\text{有监督学习} \\cup \\text{无监督学习} \
     },
     {
       id: "adv-01-05-regression-clustering",
-      title: "1.5 1.4 回归、分类与聚类",
+      title: "1.4 回归、分类与聚类",
       file: "大模型教程/01-有监督学习和无监督学习/04-回归分类与聚类.md",
       difficulty: "入门",
       duration: "0.5h",
@@ -1285,7 +1285,7 @@ $$s(i) = \\frac{b(i) - a(i)}{\\max\\{a(i), b(i)\\}}$$
     },
     {
       id: "adv-01-06-classification",
-      title: "1.6 1.5 分类问题的细分：分类、序列标注与生成",
+      title: "1.5 分类问题的细分：分类、序列标注与生成",
       file: "大模型教程/01-有监督学习和无监督学习/05-分类问题细分.md",
       difficulty: "入门",
       duration: "0.5h",
@@ -1757,7 +1757,7 @@ GPT 等大语言模型将所有任务统一为生成：
     },
     {
       id: "adv-02-02-dl-basics",
-      title: "2.2 2.1 深度学习领域的基本概念",
+      title: "2.1 深度学习领域的基本概念",
       file: "大模型教程/02-模型损失与拟合算法/01-深度学习领域的基本概念.md",
       difficulty: "入门",
       duration: "0.5h",
@@ -1945,7 +1945,7 @@ PyTorch 使用**动态计算图**（Dynamic Computational Graph）：每次前�
     },
     {
       id: "adv-02-03-least-squares",
-      title: "2.3 2.2 最小二乘法基础",
+      title: "2.2 最小二乘法基础",
       file: "大模型教程/02-模型损失与拟合算法/02-最小二乘法基础.md",
       difficulty: "入门",
       duration: "0.5h",
@@ -2125,7 +2125,7 @@ $$\\sqrt{n}(\\hat{w} - w^*) \\xrightarrow{d} \\mathcal{N}(0, \\sigma^2 (X^T X / 
     },
     {
       id: "adv-02-04-overfit-underfit",
-      title: "2.4 2.3 过拟合与欠拟合",
+      title: "2.3 过拟合与欠拟合",
       file: "大模型教程/02-模型损失与拟合算法/03-过拟合与欠拟合.md",
       difficulty: "入门",
       duration: "0.5h",
@@ -2339,7 +2339,7 @@ for epoch in range(max_epochs):
     },
     {
       id: "adv-02-05-generalization",
-      title: "2.5 2.4 泛化性",
+      title: "2.4 泛化性",
       file: "大模型教程/02-模型损失与拟合算法/04-泛化性.md",
       difficulty: "入门",
       duration: "0.5h",
@@ -2520,7 +2520,7 @@ $$n = O\\left(\\frac{\\ln|\\mathcal{H}| + \\ln(1/\\delta)}{\\epsilon^2}\\right)$
     },
     {
       id: "adv-02-06-loss-regularization",
-      title: "2.6 2.5 损失函数与正则化",
+      title: "2.5 损失函数与正则化",
       file: "大模型教程/02-模型损失与拟合算法/05-损失函数与正则化.md",
       difficulty: "入门",
       duration: "0.5h",
@@ -2776,7 +2776,7 @@ $$\\hat{x} = \\frac{x - \\mu_B}{\\sqrt{\\sigma_B^2 + \\epsilon}}$$
     },
     {
       id: "adv-02-07-gradient-descent",
-      title: "2.7 2.6 梯度下降法与优化器",
+      title: "2.6 梯度下降法与优化器",
       file: "大模型教程/02-模型损失与拟合算法/06-梯度下降法与优化器.md",
       difficulty: "入门",
       duration: "0.5h",
@@ -3081,7 +3081,7 @@ $$g \\leftarrow \\min\\left(1, \\frac{c}{\\|g\\|}\\right) \\cdot g$$
     },
     {
       id: "adv-02-08-monte-carlo",
-      title: "2.8 2.7 蒙特卡洛采样",
+      title: "2.7 蒙特卡洛采样",
       file: "大模型教程/02-模型损失与拟合算法/07-蒙特卡洛采样.md",
       difficulty: "入门",
       duration: "0.5h",
@@ -3409,7 +3409,7 @@ $$\\nabla_\\theta J = \\mathbb{E}[(R - b) \\nabla_\\theta \\log \\pi_\\theta(a|s
     },
     {
       id: "adv-03-02-classic-nn",
-      title: "3.2 3.1 经典神经网络结构",
+      title: "3.1 经典神经网络结构",
       file: "大模型教程/03-深度学习模型/01-经典神经网络结构.md",
       difficulty: "中级",
       duration: "0.5h",
@@ -3634,7 +3634,7 @@ GRU 参数量更少，实践中性能与 LSTM 相当。
     },
     {
       id: "adv-03-03-mlp",
-      title: "3.3 3.2 多层感知机（MLP）",
+      title: "3.2 多层感知机（MLP）",
       file: "大模型教程/03-深度学习模型/02-多层感知机.md",
       difficulty: "中级",
       duration: "0.5h",
@@ -3855,7 +3855,7 @@ FFN 的计算是矩阵乘法，GPU 对此高度优化。对于形状 $(B, L, D)$
     },
     {
       id: "adv-03-04-clip",
-      title: "3.4 3.3 CLIP：多模态对比学习",
+      title: "3.3 CLIP：多模态对比学习",
       file: "大模型教程/03-深度学习模型/03-CLIP多模态对比学习.md",
       difficulty: "中级",
       duration: "0.5h",
@@ -4097,7 +4097,7 @@ $$I(X; Y) \\geq \\log N - \\mathcal{L}_{\\text{InfoNCE}}$$
     },
     {
       id: "adv-03-05-transformer",
-      title: "3.5 3.4 Transformer 架构：编码器与解码器",
+      title: "3.4 Transformer 架构：编码器与解码器",
       file: "大模型教程/03-深度学习模型/04-Transformer架构.md",
       difficulty: "中级",
       duration: "0.5h",
@@ -4381,7 +4381,7 @@ class Transformer(nn.Module):
     },
     {
       id: "adv-03-06-tokenization",
-      title: "3.6 3.5 分词与词典向量化",
+      title: "3.5 分词与词典向量化",
       file: "大模型教程/03-深度学习模型/05-分词与词典向量化.md",
       difficulty: "中级",
       duration: "0.5h",
@@ -4669,7 +4669,7 @@ decoded = enc.decode(tokens)
     },
     {
       id: "adv-03-07-embedding",
-      title: "3.7 3.6 Embedding 与权重共享",
+      title: "3.6 Embedding 与权重共享",
       file: "大模型教程/03-深度学习模型/06-Embedding与权重共享.md",
       difficulty: "中级",
       duration: "0.5h",
@@ -4933,7 +4933,7 @@ $$\\mathbf{x}_i = \\mathbf{E}[\\text{token}_i] + \\mathbf{P}[i]$$
     },
     {
       id: "adv-03-08-positional-encoding",
-      title: "3.8 3.7 位置编码",
+      title: "3.7 位置编码",
       file: "大模型教程/03-深度学习模型/07-位置编码.md",
       difficulty: "中级",
       duration: "0.5h",
@@ -5213,7 +5213,7 @@ $$\\theta'_i = \\theta_i / s$$
     },
     {
       id: "adv-03-09-activation",
-      title: "3.9 3.8 激活函数：从 Softmax 到 SwiGLU",
+      title: "3.8 激活函数：从 Softmax 到 SwiGLU",
       file: "大模型教程/03-深度学习模型/08-激活函数.md",
       difficulty: "中级",
       duration: "0.5h",
@@ -5509,7 +5509,7 @@ FFN 的稀疏激活启发了混合专家（MoE）架构：既然大部分神经�
     },
     {
       id: "adv-03-10-regularization-residual",
-      title: "3.10 3.9 正则化与残差连接",
+      title: "3.9 正则化与残差连接",
       file: "大模型教程/03-深度学习模型/09-正则化与残差连接.md",
       difficulty: "中级",
       duration: "0.5h",
@@ -5824,7 +5824,7 @@ $$g_i \\leftarrow \\text{clip}(g_i, -C, C)$$
     },
     {
       id: "adv-03-11-attention",
-      title: "3.11 3.10 注意力机制",
+      title: "3.10 注意力机制",
       file: "大模型教程/03-深度学习模型/10-注意力机制.md",
       difficulty: "中级",
       duration: "0.5h",
@@ -6135,7 +6135,7 @@ class MultiHeadAttention(nn.Module):
     },
     {
       id: "adv-03-12-moe",
-      title: "3.12 3.11 MoE 稀疏网络",
+      title: "3.11 MoE 稀疏网络",
       file: "大模型教程/03-深度学习模型/11-MoE稀疏网络.md",
       difficulty: "中级",
       duration: "0.5h",
@@ -6394,7 +6394,7 @@ MoE 适合：
     },
     {
       id: "adv-03-13-multimodal",
-      title: "3.13 3.12 多模态与全模态模型",
+      title: "3.12 多模态与全模态模型",
       file: "大模型教程/03-深度学习模型/12-多模态与全模态模型.md",
       difficulty: "中级",
       duration: "0.5h",
@@ -6724,7 +6724,7 @@ $$P(\\text{image}) = \\prod_i P(t_i | t_{<i})$$
     },
     {
       id: "adv-03-14-sec-13",
-      title: "3.14 3.13 轻量训练技术",
+      title: "3.13 轻量训练技术",
       file: "大模型教程/03-深度学习模型/13-轻量训练技术.md",
       difficulty: "中级",
       duration: "0.5h",
@@ -7040,7 +7040,7 @@ DeepSpeed 的 ZeRO-Offload 和 ZeRO-Infinity 系统化地实现了这些技术�
     },
     {
       id: "adv-03-15-sec-14",
-      title: "3.15 3.14 新技术前沿",
+      title: "3.14 新技术前沿",
       file: "大模型教程/03-深度学习模型/14-新技术前沿.md",
       difficulty: "中级",
       duration: "0.5h",
@@ -7355,7 +7355,7 @@ Transformer 仍是当前的主流架构，但这些替代方案正在缩小差�
     },
     {
       id: "adv-04-02-vae",
-      title: "4.2 4.1 VAE：变分自编码器",
+      title: "4.1 VAE：变分自编码器",
       file: "大模型教程/04-视觉生成模型/01-VAE变分自编码器.md",
       difficulty: "中级",
       duration: "0.5h",
@@ -7661,7 +7661,7 @@ def vae_loss(recon_x, x, mu, logvar, beta=1.0):
     },
     {
       id: "adv-04-03-gan",
-      title: "4.3 4.2 GAN：生成对抗网络",
+      title: "4.2 GAN：生成对抗网络",
       file: "大模型教程/04-视觉生成模型/02-GAN生成对抗网络.md",
       difficulty: "中级",
       duration: "0.5h",
@@ -7934,7 +7934,7 @@ FID 是目前最常用的生成质量指标，但也有局限（如对训练集�
     },
     {
       id: "adv-04-04-ddpm",
-      title: "4.4 4.3 去噪概率模型",
+      title: "4.3 去噪概率模型",
       file: "大模型教程/04-视觉生成模型/03-去噪概率模型.md",
       difficulty: "中级",
       duration: "0.5h",
@@ -8236,7 +8236,7 @@ $$w_t = \\min\\left(\\frac{\\bar{\\alpha}_t}{1 - \\bar{\\alpha}_t}, \\gamma\\rig
     },
     {
       id: "adv-04-05-diffusion-arch",
-      title: "4.5 4.4 扩散模型结构",
+      title: "4.4 扩散模型结构",
       file: "大模型教程/04-视觉生成模型/04-扩散模型结构.md",
       difficulty: "中级",
       duration: "0.5h",
@@ -8571,7 +8571,7 @@ class DiTBlock(nn.Module):
     },
     {
       id: "adv-04-06-common-tech",
-      title: "4.6 4.5 常用技术",
+      title: "4.5 常用技术",
       file: "大模型教程/04-视觉生成模型/05-常用技术.md",
       difficulty: "中级",
       duration: "0.5h",
@@ -8817,7 +8817,7 @@ SDXL 引入了**精炼器**（Refiner）模型：基础模型生成后，精炼�
     },
     {
       id: "adv-04-07-video-generation",
-      title: "4.7 4.6 视频生成技术",
+      title: "4.6 视频生成技术",
       file: "大模型教程/04-视觉生成模型/06-视频生成技术.md",
       difficulty: "中级",
       duration: "0.5h",
@@ -9105,7 +9105,7 @@ $$Q^\\pi(s, a) = \\mathbb{E}_\\pi \\left[ \\sum_{t=0}^\\infty \\gamma^t R(s_t, a
     },
     {
       id: "adv-05-02-policy-value",
-      title: "5.2 5.1 策略梯度与价值函数",
+      title: "5.1 策略梯度与价值函数",
       file: "大模型教程/05-强化学习基础/01-策略梯度与价值函数.md",
       difficulty: "中级",
       duration: "0.5h",
@@ -9390,7 +9390,7 @@ reward-to-go $R_t$ 只考虑动作 $a_t$ 之后的奖励，部分解决了这个
     },
     {
       id: "adv-05-03-gae",
-      title: "5.3 5.2 广义优势估计",
+      title: "5.2 广义优势估计",
       file: "大模型教程/05-强化学习基础/02-广义优势估计.md",
       difficulty: "中级",
       duration: "0.5h",
@@ -9658,7 +9658,7 @@ $\\lambda$ 越大，偏差越小（更少依赖有偏的价值估计）。
     },
     {
       id: "adv-05-04-value-based-policy-based",
-      title: "5.4 5.3 Value-Based 与 Policy-Based 算法",
+      title: "5.3 Value-Based 与 Policy-Based 算法",
       file: "大模型教程/05-强化学习基础/03-value-based与policy-based算法.md",
       difficulty: "中级",
       duration: "0.5h",
@@ -9922,7 +9922,7 @@ Off-policy 样本效率高，但重要性权重可能方差大，需要额外技
     },
     {
       id: "adv-05-05-off-policy",
-      title: "5.5 5.4 Off-Policy 优化",
+      title: "5.4 Off-Policy 优化",
       file: "大模型教程/05-强化学习基础/04-Off-policy优化.md",
       difficulty: "中级",
       duration: "0.5h",
@@ -10212,7 +10212,7 @@ Off-policy 方法面临**分布偏移**（Distribution Shift）：训练分布�
     },
     {
       id: "adv-05-06-on-policy",
-      title: "5.6 5.5 On-Policy 优化",
+      title: "5.5 On-Policy 优化",
       file: "大模型教程/05-强化学习基础/05-On-policy优化.md",
       difficulty: "中级",
       duration: "0.5h",

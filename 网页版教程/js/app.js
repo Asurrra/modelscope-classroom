@@ -16,6 +16,7 @@
   var STORAGE_TOC_VIEW = 'msc-toc-view';
 
   var WORKSPACE_BASE = 'file:///Users/asura/IdeaProjects/github/modelscope-classroom/';
+  var IS_HTTP = location.protocol.startsWith('http');
   var STATUS_LIST = ['pending', 'in_progress', 'completed'];
   var STATUS_ICON = {
     pending: '⭕',
@@ -103,6 +104,14 @@
     return '累计 ' + h + 'h ' + m + 'm';
   }
   function deriveBasePath(filePath) {
+    if (IS_HTTP) {
+      // HTTP 模式下使用 /repo/ 路由前缀，由 Flask 代理项目根目录资源
+      if (!filePath) return '/repo/';
+      var idx = filePath.lastIndexOf('/');
+      var dir = idx >= 0 ? filePath.slice(0, idx + 1) : '';
+      return '/repo/' + dir;
+    }
+    // file:// 协议直接打开时保持原有行为
     if (!filePath) return WORKSPACE_BASE;
     var idx = filePath.lastIndexOf('/');
     var dir = idx >= 0 ? filePath.slice(0, idx + 1) : '';
@@ -583,6 +592,129 @@
     }
   }
 
+  // ---------- Math & Diagram rendering ----------
+
+  // Lightweight LaTeX-to-Unicode/HTML fallback when KaTeX isn't loaded
+  var GREEK = {
+    alpha:'α',beta:'β',gamma:'γ',delta:'δ',epsilon:'ε',zeta:'ζ',eta:'η',theta:'θ',
+    iota:'ι',kappa:'κ',lambda:'λ',mu:'μ',nu:'ν',xi:'ξ',pi:'π',rho:'ρ',
+    sigma:'σ',tau:'τ',upsilon:'υ',phi:'φ',chi:'χ',psi:'ψ',omega:'ω',
+    Gamma:'Γ',Delta:'Δ',Theta:'Θ',Lambda:'Λ',Xi:'Ξ',Pi:'Π',Sigma:'Σ',
+    Phi:'Φ',Psi:'Ψ',Omega:'Ω',varepsilon:'ε',varphi:'φ'
+  };
+  var SYMBOLS = {
+    'rightarrow':'→','leftarrow':'←','Rightarrow':'⇒','Leftarrow':'⇐',
+    'leftrightarrow':'↔','Leftrightarrow':'⇔','uparrow':'↑','downarrow':'↓',
+    'leq':'≤','geq':'≥','neq':'≠','approx':'≈','equiv':'≡','sim':'∼',
+    'times':'×','cdot':'·','div':'÷','pm':'±','mp':'∓',
+    'infty':'∞','partial':'∂','nabla':'∇','forall':'∀','exists':'∃',
+    'in':'∈','notin':'∉','subset':'⊂','supset':'⊃','subseteq':'⊆','supseteq':'⊇',
+    'cup':'∪','cap':'∩','emptyset':'∅','varnothing':'∅',
+    'sum':'∑','prod':'∏','int':'∫','iint':'∬','oint':'∮',
+    'sqrt':'√','langle':'⟨','rangle':'⟩','ldots':'…','cdots':'⋯','vdots':'⋮',
+    'quad':' ','qquad':'  ',',':' ',';':' ',':':' ','!':'',
+    'star':'⋆','circ':'∘','bullet':'•','diamond':'◇','triangle':'△',
+    'log':'log','ln':'ln','sin':'sin','cos':'cos','tan':'tan',
+    'exp':'exp','lim':'lim','max':'max','min':'min','sup':'sup','inf':'inf','arg':'arg',
+    'det':'det','dim':'dim','ker':'ker','hom':'hom',
+    'mathbb':'','mathcal':'','mathbf':'','mathrm':'','text':'','operatorname':'',
+    'left':'','right':'','Big':'','big':'','bigg':'','Bigg':''
+  };
+  var SUP_MAP = {'0':'⁰','1':'¹','2':'²','3':'³','4':'⁴','5':'⁵','6':'⁶','7':'⁷','8':'⁸','9':'⁹',
+    '+':'⁺','-':'⁻','=':'⁼','(':'⁽',')':'⁾','n':'ⁿ','i':'ⁱ','T':'ᵀ','*':'˟'};
+  var SUB_MAP = {'0':'₀','1':'₁','2':'₂','3':'₃','4':'₄','5':'₅','6':'₆','7':'₇','8':'₈','9':'₉',
+    '+':'₊','-':'₋','=':'₌','(':'₍',')':'₎','i':'ᵢ','j':'ⱼ','k':'ₖ','n':'ₙ','m':'ₘ','x':'ₓ'};
+
+  function texToUnicode(tex) {
+    var s = tex;
+    // \frac{a}{b} → a/b or (a)/(b)
+    s = s.replace(/\\frac\{([^}]*)\}\{([^}]*)\}/g, function(_,a,b) {
+      var sa = texToUnicode(a), sb = texToUnicode(b);
+      return (sa.length > 1 ? '(' + sa + ')' : sa) + '/' + (sb.length > 1 ? '(' + sb + ')' : sb);
+    });
+    // \sqrt{x} → √(x)
+    s = s.replace(/\\sqrt\{([^}]*)\}/g, function(_,c) { return '√(' + texToUnicode(c) + ')'; });
+    // \text{...}, \mathrm{...}, \operatorname{...} → plain text
+    s = s.replace(/\\(?:text|mathrm|operatorname)\{([^}]*)\}/g, '$1');
+    // \mathbb{X} → double-struck
+    s = s.replace(/\\mathbb\{([^}]*)\}/g, function(_,c) {
+      var bb = {A:'\ud835\udd38',B:'\ud835\udd39',C:'\u2102',E:'\ud835\udd3c',F:'\ud835\udd3d',H:'\u210d',N:'\u2115',P:'\u2119',Q:'\u211a',R:'\u211d',Z:'\u2124'};
+      return c.split('').map(function(ch) { return bb[ch] || ch; }).join('');
+    });
+    // \mathcal{X} → script
+    s = s.replace(/\\mathcal\{([^}]*)\}/g, function(_,c) {
+      var cal = {A:'\ud835\udc9c',B:'\u212c',C:'\ud835\udc9e',D:'\ud835\udc9f',E:'\u2130',F:'\u2131',G:'\ud835\udca2',H:'\u210b',I:'\u2110',L:'\u2112',M:'\u2133',N:'\ud835\udca9',O:'\ud835\udcaa',P:'\ud835\udcab',R:'\u211b',S:'\ud835\udcae',T:'\ud835\udcaf',X:'\ud835\udcb3'};
+      return c.split('').map(function(ch) { return cal[ch] || ch; }).join('');
+    });
+    // \mathbf{x} → keep as-is
+    s = s.replace(/\\mathbf\{([^}]*)\}/g, '$1');
+    // superscript: ^{...} or ^x
+    s = s.replace(/\^\{([^}]*)\}/g, function(_,c) {
+      var inner = texToUnicode(c);
+      var mapped = inner.split('').map(function(ch) { return SUP_MAP[ch] || ch; }).join('');
+      var unmapped = inner.split('').filter(function(ch) { return !SUP_MAP[ch] && ch !== ' '; }).length;
+      if (unmapped > inner.length * 0.5 && inner.length > 2) return '^(' + inner + ')';
+      return mapped;
+    });
+    s = s.replace(/\^([a-zA-Z0-9*])/g, function(_,c) { return SUP_MAP[c] || '^' + c; });
+    // subscript: _{...} or _x
+    s = s.replace(/_\{([^}]*)\}/g, function(_,c) {
+      var inner = texToUnicode(c);
+      var mapped = inner.split('').map(function(ch) { return SUB_MAP[ch] || ch; }).join('');
+      var unmapped = inner.split('').filter(function(ch) { return !SUB_MAP[ch] && ch !== ' '; }).length;
+      if (unmapped > inner.length * 0.5 && inner.length > 2) return '_' + inner;
+      return mapped;
+    });
+    s = s.replace(/_([a-zA-Z0-9])/g, function(_,c) { return SUB_MAP[c] || '_' + c; });
+    // Greek letters and symbols
+    s = s.replace(/\\([a-zA-Z]+)/g, function(_,cmd) {
+      return GREEK[cmd] || SYMBOLS[cmd] || cmd;
+    });
+    // \| → ‖, \{ → {, \} → }
+    s = s.replace(/\\\|/g, '‖').replace(/\\\{/g, '{').replace(/\\\}/g, '}');
+    // Remove remaining backslashes before special chars
+    s = s.replace(/\\\\/g, '').replace(/\\/g, '');
+    return s;
+  }
+
+  function renderMathAndDiagrams(container) {
+    if (!container) return;
+
+    // KaTeX rendering (or fallback to Unicode)
+    var useKatex = (typeof katex !== 'undefined');
+
+    container.querySelectorAll('.math-block, .math-block-inline, .math-inline').forEach(function(el) {
+      var tex = el.getAttribute('data-math');
+      if (!tex) return;
+      var isBlock = el.classList.contains('math-block') || el.classList.contains('math-block-inline');
+      if (useKatex) {
+        try {
+          katex.render(tex, el, { displayMode: isBlock, throwOnError: false });
+          return;
+        } catch(e) { /* fall through to unicode fallback */ }
+      }
+      // Unicode fallback
+      el.textContent = texToUnicode(tex);
+      el.classList.add('math-fallback');
+    });
+
+    // Mermaid rendering (or fallback to styled code block)
+    var mermaidEls = container.querySelectorAll('.mermaid');
+    if (mermaidEls.length === 0) return;
+
+    if (typeof mermaid !== 'undefined') {
+      try {
+        mermaid.run({ nodes: mermaidEls });
+      } catch(e) {
+        // If mermaid.run fails, apply fallback
+        mermaidEls.forEach(function(el) { el.classList.add('mermaid-fallback'); });
+      }
+    } else {
+      // Mermaid not loaded — show as styled diagram code
+      mermaidEls.forEach(function(el) { el.classList.add('mermaid-fallback'); });
+    }
+  }
+
   // ---------- chapter loading ----------
   function loadChapter(id, updateHash) {
     var ch = state.chapterById[id];
@@ -685,6 +817,14 @@
 
       // Mark key-point positions in the rendered article (★ markers)
       markKeyPointsInContent(id);
+
+      // Optional enhancements: code runner (if Python service is up) + quiz panel.
+      // These are no-ops when the prerequisites are absent.
+      try { enableCodeRunner(body); } catch (_) {}
+      try { enableQuiz(ch, body); } catch (_) {}
+
+      // Math (KaTeX) & Diagram (Mermaid) rendering
+      renderMathAndDiagrams(body);
 
       // Re-evaluate scroll position for the freshly loaded chapter
       // (covers very short content where no scroll event will ever fire)
@@ -1243,6 +1383,36 @@
   }
 
   function init() {
+    // 0. Initialize mermaid if loaded (async script may arrive later)
+    if (typeof mermaid !== 'undefined') {
+      mermaid.initialize({ startOnLoad: false, theme: 'dark', securityLevel: 'loose' });
+    }
+    // Listen for async library loads to re-render current content
+    var mathRetryTimer = null;
+    function onLibLoaded() {
+      if (mathRetryTimer) clearTimeout(mathRetryTimer);
+      mathRetryTimer = setTimeout(function() {
+        var body = document.getElementById('chapter-body') || document.querySelector('.content-body');
+        if (body) {
+          if (typeof mermaid !== 'undefined' && !window.__mermaidInited) {
+            window.__mermaidInited = true;
+            mermaid.initialize({ startOnLoad: false, theme: 'dark', securityLevel: 'loose' });
+          }
+          renderMathAndDiagrams(body);
+        }
+      }, 100);
+    }
+    // Poll for late-arriving async scripts (KaTeX/Mermaid)
+    var pollCount = 0;
+    var pollTimer = setInterval(function() {
+      pollCount++;
+      if (pollCount > 50) { clearInterval(pollTimer); return; } // stop after 5s
+      if (typeof katex !== 'undefined' || typeof mermaid !== 'undefined') {
+        clearInterval(pollTimer);
+        onLibLoaded();
+      }
+    }, 100);
+
     // 1. data
     buildIndex();
 
@@ -1277,6 +1447,9 @@
     // 5. timer
     startTimer();
 
+    // 5.5. probe optional Python runner service
+    detectPythonService().then(showPythonServiceStatus);
+
     // 6. events
     bindStatusButtons();
     bindNotes();
@@ -1290,6 +1463,347 @@
 
     // initial stats even when no chapter selected
     refreshStats();
+  }
+
+  // ---------- Python service detection (optional code runner) ----------
+  var PYTHON_API = 'http://localhost:5678';
+  var pythonServiceAvailable = false;
+
+  function detectPythonService() {
+    return fetch(PYTHON_API + '/api/health', { mode: 'cors' })
+      .then(function (r) { return r.ok; })
+      .then(function (ok) {
+        pythonServiceAvailable = !!ok;
+        // 服务检测完成后，重新对当前已渲染的文章内容启用代码运行器
+        if (pythonServiceAvailable) {
+          var body = document.querySelector('#reader-body');
+          if (body) {
+            try { enableCodeRunner(body); } catch (_) {}
+          }
+        }
+      })
+      .catch(function () { pythonServiceAvailable = false; });
+  }
+
+  function showPythonServiceStatus() {
+    var existing = document.querySelector('.python-status-bar');
+    if (existing) existing.remove();
+
+    var bar = document.createElement('div');
+    bar.className = 'python-status-bar';
+
+    if (pythonServiceAvailable) {
+      bar.classList.add('connected');
+      bar.innerHTML = '<span class="status-icon">\u2713</span> Python \u4ee3\u7801\u8fd0\u884c\u5df2\u5c31\u7eea';
+      var target = document.querySelector('#reader-inner') || document.querySelector('#reader');
+      if (target) target.prepend(bar);
+      setTimeout(function () { bar.classList.add('fade-out'); }, 4000);
+      setTimeout(function () { bar.remove(); }, 4600);
+    } else {
+      bar.classList.add('disconnected');
+      bar.innerHTML = '<span class="status-icon">\ud83d\udca1</span> \u542f\u52a8 Python \u670d\u52a1\u53ef\u89e3\u9501\u4ee3\u7801\u8fd0\u884c\u529f\u80fd\uff1a<code>./start.sh</code>';
+      var target2 = document.querySelector('#reader-inner') || document.querySelector('#reader');
+      if (target2) target2.prepend(bar);
+    }
+  }
+
+  // ---------- Code Runner (optional, requires localhost:5678) ----------
+  function isRunnableCode(code) {
+    // === 严格白名单模式：只有真正自包含、能产生输出的代码才可运行 ===
+
+    // 1. shell 命令 → 不可运行
+    if (/^[!%]|^pip\s|^apt\s|^git\s|^conda\s/m.test(code)) return false;
+
+    // 2. 包含省略号(不完整) → 不可运行
+    if (/^\s*\.\.\.\s*$/m.test(code)) return false;
+
+    // 3. 至少 3 行有效代码
+    var lines = code.split('\n').filter(function(l) {
+      return l.trim() && !l.trim().startsWith('#');
+    });
+    if (lines.length < 3) return false;
+
+    // 4. 必须有 print() — 代码必须产生可见输出
+    if (!/\bprint\s*\(/.test(code)) return false;
+
+    // 5. 只允许标准库 import（白名单）
+    var allowedModules = [
+      'os','sys','json','re','math','random','time','datetime',
+      'collections','itertools','functools','string','hashlib','copy',
+      'typing','dataclasses','enum','abc','io','struct','textwrap',
+      'operator','decimal','fractions','statistics','heapq','bisect',
+      'array','queue','threading','contextlib','inspect','pprint',
+      'logging','unittest','pathlib','tempfile','glob','shutil',
+      'base64','urllib','http','socket','html','xml','csv',
+      'configparser','argparse','getopt','secrets','uuid'
+    ];
+    var importMatches = code.match(/^(?:from\s+(\S+)|import\s+(\S+))/gm) || [];
+    for (var i = 0; i < importMatches.length; i++) {
+      var m = importMatches[i];
+      var mod = m.replace(/^(?:from|import)\s+/, '').split('.')[0].split(' ')[0];
+      if (mod && allowedModules.indexOf(mod) === -1) return false;
+    }
+
+    // 6. 禁止危险操作
+    if (/\bsubprocess\b|\bos\.system\s*\(|\bos\.popen\s*\(|\bos\.exec/.test(code)) return false;
+
+    // 7. 函数调用检查：未定义调用不超过 20%
+    var builtins = ['print','len','range','int','str','float','list','dict','set',
+      'tuple','type','isinstance','issubclass','hasattr','getattr','setattr',
+      'enumerate','zip','map','filter','sorted','reversed','sum','min','max',
+      'abs','round','open','input','format','repr','id','hash','hex','oct','bin',
+      'chr','ord','any','all','next','iter','super','property','staticmethod',
+      'classmethod','vars','dir','help','eval','exec','compile','globals','locals',
+      'callable','delattr','divmod','pow','slice','object','bool','bytes','bytearray',
+      'memoryview','complex','frozenset','breakpoint','exit','quit'];
+    var builtinSet = {};
+    builtins.forEach(function(b) { builtinSet[b] = true; });
+
+    var definedFuncs = {};
+    (code.match(/(?:^|\n)\s*def\s+([a-z_]\w*)/g) || []).forEach(function(m) {
+      definedFuncs[m.replace(/.*def\s+/, '')] = true;
+    });
+    var assignedVars = {};
+    (code.match(/^([a-z_]\w*)\s*=/gm) || []).forEach(function(m) {
+      assignedVars[m.replace(/\s*=.*/, '')] = true;
+    });
+
+    var allCalls = code.match(/\b([a-z_]\w*)\s*\(/g) || [];
+    var unknown = 0, total = 0;
+    for (var j = 0; j < allCalls.length; j++) {
+      var funcName = allCalls[j].replace(/\s*\($/, '');
+      if (/^(def|class|if|for|while|with|elif|except|lambda|not|and|or|in|is)$/.test(funcName)) continue;
+      if (funcName.indexOf('.') >= 0) continue;
+      total++;
+      if (!builtinSet[funcName] && !definedFuncs[funcName] && !assignedVars[funcName]) {
+        unknown++;
+      }
+    }
+    if (total > 0 && unknown / total > 0.2) return false;
+
+    return true;
+  }
+
+  function enableCodeRunner(container) {
+    if (!container) return;
+
+    var codeBlocks = container.querySelectorAll(
+      'pre > code.language-python, pre > code.lang-python, pre > code.python'
+    );
+    codeBlocks.forEach(function (codeEl) {
+      var pre = codeEl.parentElement;
+      if (!pre) return;
+      // 已有 Run 按钮的直接跳过
+      if (pre.querySelector('.run-btn')) return;
+    
+      var code = codeEl.textContent || '';
+      pre.style.position = 'relative';
+    
+      if (pythonServiceAvailable && isRunnableCode(code)) {
+        // 可运行：移除可能存在的旧 badge 和 copy 按钮，添加 Run 按钮
+        var oldBadge = pre.querySelector('.code-example-badge');
+        if (oldBadge) oldBadge.remove();
+        var oldCopy = pre.querySelector('.code-copy-btn');
+        if (oldCopy) oldCopy.remove();
+    
+        var btn = document.createElement('button');
+        btn.className = 'run-btn';
+        btn.type = 'button';
+        btn.innerHTML = '&#9654; Run';
+        btn.addEventListener('click', function () { runCode(codeEl, btn, pre); });
+        pre.appendChild(btn);
+      } else if (!pre.querySelector('.code-example-badge')) {
+        // 不可运行且还没有 badge：显示"示例代码"标签 + 复制按钮
+        var badge = document.createElement('span');
+        badge.className = 'code-example-badge';
+        badge.textContent = '\uD83D\uDCCB 示例代码';
+        pre.appendChild(badge);
+    
+        var copyBtn = document.createElement('button');
+        copyBtn.className = 'code-copy-btn';
+        copyBtn.type = 'button';
+        copyBtn.textContent = '复制';
+        copyBtn.addEventListener('click', function () {
+          navigator.clipboard.writeText(code).then(function () {
+            copyBtn.textContent = '✓ 已复制';
+            setTimeout(function () { copyBtn.textContent = '复制'; }, 2000);
+          });
+        });
+        pre.appendChild(copyBtn);
+      }
+    });
+  }
+
+  function runCode(codeEl, btn, pre) {
+    var code = codeEl.textContent || '';
+    btn.innerHTML = '&#8987; \u8fd0\u884c\u4e2d...';
+    btn.disabled = true;
+
+    var oldOutput = pre.nextElementSibling;
+    if (oldOutput && oldOutput.classList && oldOutput.classList.contains('code-output')) {
+      oldOutput.remove();
+    }
+
+    fetch(PYTHON_API + '/api/run', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ code: code, timeout: 10 }),
+    })
+      .then(function (r) { return r.json(); })
+      .then(function (data) {
+        btn.innerHTML = '&#9654; Run';
+        btn.disabled = false;
+
+        var output = document.createElement('div');
+        output.className = 'code-output';
+        var html = '';
+        if (data && data.stdout) {
+          html += '<pre class="output-stdout">' + escapeText(data.stdout) + '</pre>';
+        }
+        if (data && data.stderr) {
+          html += '<pre class="output-stderr">' + escapeText(data.stderr) + '</pre>';
+        }
+        if (!html) {
+          html = '<pre class="output-stdout">(\u65e0\u8f93\u51fa)</pre>';
+        }
+        output.innerHTML = html;
+        pre.after(output);
+      })
+      .catch(function (err) {
+        btn.innerHTML = '&#9654; Run';
+        btn.disabled = false;
+        var output = document.createElement('div');
+        output.className = 'code-output';
+        output.innerHTML =
+          '<pre class="output-stderr">\u8fde\u63a5\u5931\u8d25: ' +
+          escapeText(err && err.message ? err.message : String(err)) +
+          '</pre>';
+        pre.after(output);
+      });
+  }
+
+  // ---------- Quiz (uses pre-generated window.QUIZ_DATA + QUIZ_PATH_MAP) ----------
+  function enableQuiz(ch, articleEl) {
+    if (!ch || !articleEl) return;
+    // Resolve chapter file path to quiz ID via QUIZ_PATH_MAP
+    var filePath = ch.file || '';
+    var quizId = (window.QUIZ_PATH_MAP || {})[filePath];
+    var data = quizId ? (window.QUIZ_DATA || {})[quizId] : null;
+    if (!data || !Array.isArray(data.questions) || data.questions.length === 0) return;
+
+    // Avoid duplicates
+    if (articleEl.querySelector('.quiz-start-bar')) return;
+
+    var bar = document.createElement('div');
+    bar.className = 'quiz-start-bar';
+    bar.innerHTML =
+      '<button type="button" class="quiz-start-btn">\ud83d\udcdd \u77e5\u8bc6\u70b9\u6d4b\u9a8c\uff08' +
+      data.questions.length +
+      '\u9898\uff09</button>';
+    articleEl.appendChild(bar);
+
+    bar.querySelector('.quiz-start-btn').addEventListener('click', function () {
+      showQuizPanel(quizId, data.questions);
+    });
+  }
+
+  function showQuizPanel(chapterId, questions) {
+    var overlay = document.createElement('div');
+    overlay.className = 'quiz-overlay';
+
+    var panel = document.createElement('div');
+    panel.className = 'quiz-panel';
+
+    var currentQ = 0;
+    var score = 0;
+    var answers = [];
+
+    function renderQuestion() {
+      var q = questions[currentQ];
+      var html = '<div class="quiz-header">';
+      html += '<span class="quiz-progress">' + (currentQ + 1) + ' / ' + questions.length + '</span>';
+      html += '<button type="button" class="quiz-close" aria-label="close">&times;</button>';
+      html += '</div>';
+      html += '<div class="quiz-question">' + escapeText(q.question) + '</div>';
+      html += '<div class="quiz-options">';
+      q.options.forEach(function (opt, i) {
+        html += '<div class="quiz-option" data-idx="' + i + '">';
+        html += '<span class="quiz-option-letter">' + 'ABCDEFGH'[i] + '</span>';
+        html += '<span class="quiz-option-text">' + escapeText(opt) + '</span>';
+        html += '</div>';
+      });
+      html += '</div>';
+      html += '<div class="quiz-feedback" style="display:none;"></div>';
+      panel.innerHTML = html;
+
+      panel.querySelector('.quiz-close').addEventListener('click', function () { overlay.remove(); });
+
+      panel.querySelectorAll('.quiz-option').forEach(function (opt) {
+        opt.addEventListener('click', function onPick() {
+          var idx = parseInt(this.dataset.idx, 10);
+          answers.push(idx);
+
+          var correct = q.answer;
+          panel.querySelectorAll('.quiz-option').forEach(function (o) {
+            o.style.pointerEvents = 'none';
+            var oIdx = parseInt(o.dataset.idx, 10);
+            if (oIdx === correct) o.classList.add('quiz-correct');
+            if (oIdx === idx && idx !== correct) o.classList.add('quiz-wrong');
+          });
+
+          var feedback = panel.querySelector('.quiz-feedback');
+          if (idx === correct) {
+            score++;
+            feedback.innerHTML =
+              '<span class="feedback-correct">\u2713 \u6b63\u786e\uff01</span><p>' +
+              escapeText(q.explanation || '') + '</p>';
+          } else {
+            feedback.innerHTML =
+              '<span class="feedback-wrong">\u2717 \u9519\u8bef</span><p>' +
+              escapeText(q.explanation || '') + '</p>';
+          }
+          feedback.style.display = 'block';
+
+          var nextBtn = document.createElement('button');
+          nextBtn.type = 'button';
+          nextBtn.className = 'quiz-next-btn';
+          nextBtn.textContent =
+            currentQ < questions.length - 1 ? '\u4e0b\u4e00\u9898 \u2192' : '\u67e5\u770b\u7ed3\u679c';
+          nextBtn.addEventListener('click', function () {
+            currentQ++;
+            if (currentQ < questions.length) renderQuestion();
+            else showResult();
+          });
+          feedback.appendChild(nextBtn);
+        });
+      });
+    }
+
+    function showResult() {
+      var pct = Math.round((score / questions.length) * 100);
+      var remark = pct >= 80 ? '\u8868\u73b0\u4f18\u79c0\uff01' : pct >= 60 ? '\u8fd8\u4e0d\u9519\uff0c\u7ee7\u7eed\u52a0\u6cb9\uff01' : '\u5efa\u8bae\u91cd\u65b0\u9605\u8bfb\u672c\u7ae0\u5185\u5bb9';
+      var html = '<div class="quiz-header">';
+      html += '<span class="quiz-progress">\u6d4b\u9a8c\u5b8c\u6210</span>';
+      html += '<button type="button" class="quiz-close" aria-label="close">&times;</button>';
+      html += '</div>';
+      html += '<div class="quiz-result">';
+      html += '<div class="quiz-score">' + score + ' / ' + questions.length + '</div>';
+      html += '<div class="quiz-pct">' + pct + '%</div>';
+      html += '<p>' + remark + '</p>';
+      html += '<button type="button" class="quiz-close-btn">\u5173\u95ed</button>';
+      html += '</div>';
+      panel.innerHTML = html;
+      panel.querySelector('.quiz-close').addEventListener('click', function () { overlay.remove(); });
+      panel.querySelector('.quiz-close-btn').addEventListener('click', function () { overlay.remove(); });
+    }
+
+    overlay.addEventListener('click', function (e) {
+      if (e.target === overlay) overlay.remove();
+    });
+
+    overlay.appendChild(panel);
+    document.body.appendChild(overlay);
+    renderQuestion();
   }
 
   if (document.readyState === 'loading') {

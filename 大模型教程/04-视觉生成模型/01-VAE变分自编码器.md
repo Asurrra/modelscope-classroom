@@ -38,7 +38,7 @@ $$\mathcal{L}_{\text{AE}} = \|\mathbf{x} - \hat{\mathbf{x}}\|^2$$
 
 $$p(\mathbf{x}) = \int p(\mathbf{x} | \mathbf{z}) p(\mathbf{z}) d\mathbf{z}$$
 
-��标是最大化数据的对数似然 $\log p(\mathbf{x})$。但直接计算这个积分通常是不可行的（intractable）——因为需要对所有可能的 $\mathbf{z}$ 穷举积分，维度一高就完全不现实。
+目标是最大化数据的对数似然 $\log p(\mathbf{x})$。但直接计算这个积分通常是不可行的（intractable）——因为需要对所有可能的 $\mathbf{z}$ 穷举积分，维度一高就完全不现实。
 
 假设你正在经营一家肖像画工作室，想要统计"所有顾客满意度的总期望"。理想做法是：遍历每一种可能的画风 $\mathbf{z}$，计算该画风下画出好作品的概率，再求和。但画风有无穷多种组合，逐一遍历根本不可行。变分推断的策略是：找一个近似分布来"猜测"哪些画风最可能产生好结果，然后只在这些画风上重点计算。
 
@@ -97,7 +97,7 @@ $$p_\theta(\mathbf{x}|\mathbf{z}) = \mathcal{N}(\mathbf{x}; \boldsymbol{\mu}_\th
 
 ### 重参数化技巧
 
-�� $q_\phi(\mathbf{z}|\mathbf{x})$ 采样 $\mathbf{z}$ 的操作不可微。**重参数化技巧**（Reparameterization Trick）将随机性从参数中分离：
+从 $q_\phi(\mathbf{z}|\mathbf{x})$ 采样 $\mathbf{z}$ 的操作不可微。**重参数化技巧**（Reparameterization Trick）将随机性从参数中分离：
 
 $$\mathbf{z} = \boldsymbol{\mu}_\phi(\mathbf{x}) + \boldsymbol{\sigma}_\phi(\mathbf{x}) \odot \boldsymbol{\epsilon}, \quad \boldsymbol{\epsilon} \sim \mathcal{N}(\mathbf{0}, \mathbf{I})$$
 
@@ -113,7 +113,7 @@ $$\mathbf{z} = \boldsymbol{\mu}_\phi(\mathbf{x}) + \boldsymbol{\sigma}_\phi(\mat
 
 ### KL 散度的解析解
 
-��先验是标准正态分布 $p(\mathbf{z}) = \mathcal{N}(\mathbf{0}, \mathbf{I})$，近似后验是对角高斯时，KL 散度有解析解：
+当先验是标准正态分布 $p(\mathbf{z}) = \mathcal{N}(\mathbf{0}, \mathbf{I})$，近似后验是对角高斯时，KL 散度有解析解：
 
 $$D_{\text{KL}}(q_\phi \| p) = -\frac{1}{2} \sum_{j=1}^d \left(1 + \log \sigma_j^2 - \mu_j^2 - \sigma_j^2\right)$$
 
@@ -210,7 +210,7 @@ Stable Diffusion 的 VAE 使用 KL 正则化（连续潜空间）。也有工作
 
 VAE 训练中常见的问题是**后验坍缩**（Posterior Collapse）：KL 项被优化到接近零，编码器输出接近先验，解码器忽略隐变量。
 
-��因：强大的解码器可以在忽略 $\mathbf{z}$ 的情况下生成数据，而 KL 项鼓励 $q_\phi$ 接近先验。这就像一位天才画家发现：不管你给他什么"精髓描述"，他都能凭空画出不错的画——于是编码器的笔记变得毫无意义，最终退化为空白纸。
+原因：强大的解码器可以在忽略 $\mathbf{z}$ 的情况下生成数据，而 KL 项鼓励 $q_\phi$ 接近先验。这就像一位天才画家发现：不管你给他什么"精髓描述"，他都能凭空画出不错的画——于是编码器的笔记变得毫无意义，最终退化为空白纸。
 
 解决方案：
 - KL annealing：训练初期降低 KL 权重
@@ -229,7 +229,7 @@ $$\max_{\phi, \theta} \; \mathbb{E}_{q_\phi(\mathbf{z}|\mathbf{x})}[\log p_\thet
 
 其中 $I(\mathbf{x}; \mathbf{z})$ 表示输入与潜在变量之间的互信息，$I_c$ 为信息容量约束，$\beta$ 为对应的拉格朗日乘子。
 
->��信息论角度看，隐变量 $\mathbf{z}$ 应当捕获关于 $\mathbf{x}$ 的"必要且充分"的信息，同时通过限制互信息丢弃冗余细节。$\beta$ 越大，瓶颈越紧，隐变量越抽象；$\beta$ 越小，保留的细节越多。好的课堂笔记应当记录核心要点，而非逐字抄写老师说的每句话——保留太多细节则臃肿难用，压缩过度则关键信息遗失。VAE 的信息瓶颈正是在这两个极端之间寻找最优平衡，这也是 ELBO 中重建项与 KL 项对立统一的信息论解释。
+>从信息论角度看，隐变量 $\mathbf{z}$ 应当捕获关于 $\mathbf{x}$ 的"必要且充分"的信息，同时通过限制互信息丢弃冗余细节。$\beta$ 越大，瓶颈越紧，隐变量越抽象；$\beta$ 越小，保留的细节越多。好的课堂笔记应当记录核心要点，而非逐字抄写老师说的每句话——保留太多细节则臃肿难用，压缩过度则关键信息遗失。VAE 的信息瓶颈正是在这两个极端之间寻找最优平衡，这也是 ELBO 中重建项与 KL 项对立统一的信息论解释。
 
 ### 与 EM 算法的联系
 

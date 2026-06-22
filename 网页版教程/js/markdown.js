@@ -38,6 +38,13 @@
 
   function joinPath(base, rel) {
     if (!rel) return rel;
+    // HTTP模式下，将 file:// 路径转换为 /repo/ 路径
+    if (/^file:\/\//i.test(rel) && location.protocol.startsWith('http')) {
+      var FILE_PREFIX = 'file:///Users/asura/IdeaProjects/github/modelscope-classroom/';
+      if (rel.startsWith(FILE_PREFIX)) {
+        return '/repo/' + rel.slice(FILE_PREFIX.length);
+      }
+    }
     if (/^(https?:|data:|file:|blob:|\/\/)/i.test(rel)) return rel;
     if (!base) return rel;
     if (base.endsWith('/')) return base + rel.replace(/^\.?\/+/, '');
@@ -51,7 +58,7 @@
     const escaped = escapeHtml(code);
     const isCode = /^(js|javascript|ts|typescript|py|python|java|go|rust|c|cpp|cs|json|sh|bash|yaml|yml|sql)$/.test(l);
     if (!isCode) return escaped;
-
+  
     const keywords = {
       js: /\b(const|let|var|function|return|if|else|for|while|do|switch|case|break|continue|new|class|extends|import|export|from|default|async|await|yield|try|catch|finally|throw|typeof|instanceof|in|of|null|undefined|true|false|this)\b/g,
       ts: /\b(const|let|var|function|return|if|else|for|while|do|switch|case|break|continue|new|class|extends|implements|interface|import|export|from|default|async|await|yield|try|catch|finally|throw|typeof|instanceof|in|of|null|undefined|true|false|this|public|private|protected|readonly|type|enum|as|namespace)\b/g,
@@ -72,25 +79,64 @@
       l === 'yml' ? 'yaml' :
       l === 'sql' ? 'js' :
       l;
-
+  
+    // Use placeholder tokens to protect already-added HTML from subsequent regex passes
+    const stash = [];
+    function protect(html) {
+      stash.push(html);
+      return '\x01P' + (stash.length - 1) + '\x02';
+    }
+    // wrapOpaque: stash the ENTIRE rendered span (tags + content) as one opaque placeholder
+    // Content is fully hidden from subsequent regex passes (used for strings & comments)
+    function wrapOpaque(cls, content) {
+      return protect('<span class="' + cls + '">' + content + '</span>');
+    }
+    // wrapTransparent: only protect the span tags, content stays visible for further highlighting
+    // (used for numbers, keywords, function calls)
+    function wrapTransparent(cls, content) {
+      return protect('<span class="' + cls + '">') + content + protect('</span>');
+    }
+  
     let out = escaped;
-    // strings
-    out = out.replace(/(&quot;[^&]*?&quot;|&#39;[^&]*?&#39;)/g, '<span class="tok-str">$1</span>');
-    // single-line comments
+  
+    // 1. strings — fully opaque (hide content from number/keyword regexes)
+    out = out.replace(/(&quot;[^&]*?&quot;|&#39;[^&]*?&#39;)/g, function(m) {
+      return wrapOpaque('tok-str', m);
+    });
+  
+    // 2. comments — fully opaque (hide content from number/keyword regexes)
     if (langKey === 'py' || langKey === 'sh' || langKey === 'yaml') {
-      out = out.replace(/(^|\n)(#[^\n]*)/g, '$1<span class="tok-com">$2</span>');
+      out = out.replace(/(^|\n)(#[^\n]*)/g, function(_, pre, comment) {
+        return pre + wrapOpaque('tok-com', comment);
+      });
     } else {
-      out = out.replace(/(\/\/[^\n]*)/g, '<span class="tok-com">$1</span>');
-      out = out.replace(/(\/\*[\s\S]*?\*\/)/g, '<span class="tok-com">$1</span>');
+      out = out.replace(/(\/\/[^\n]*)/g, function(m) { return wrapOpaque('tok-com', m); });
+      out = out.replace(/(\/\*[\s\S]*?\*\/)/g, function(m) { return wrapOpaque('tok-com', m); });
     }
-    // numbers
-    out = out.replace(/\b(\d+(?:\.\d+)?)\b/g, '<span class="tok-num">$1</span>');
-    // keywords
+  
+    // 3. numbers (skip digits inside HTML entities like &#39;)
+    out = out.replace(/&#\d+;/g, function(m) { return wrapOpaque('tok-ent', m); });
+    out = out.replace(/\b(\d+(?:\.\d+)?(?:e[+-]?\d+)?)\b/g, function(m) {
+      return wrapTransparent('tok-num', m);
+    });
+  
+    // 4. keywords
     if (keywords[langKey]) {
-      out = out.replace(keywords[langKey], '<span class="tok-key">$&</span>');
+      out = out.replace(keywords[langKey], function(m) {
+        return wrapTransparent('tok-key', m);
+      });
     }
-    // function calls
-    out = out.replace(/([A-Za-z_][\w]*)(\s*\()/g, '<span class="tok-fn">$1</span>$2');
+  
+    // 5. function calls
+    out = out.replace(/([A-Za-z_][\w]*)(\s*\()/g, function(_, name, paren) {
+      return wrapTransparent('tok-fn', name) + paren;
+    });
+  
+    // Restore all placeholders
+    out = out.replace(/\x01P(\d+)\x02/g, function(_, i) {
+      return stash[+i];
+    });
+  
     return out;
   }
 
@@ -105,10 +151,16 @@
       return '\u0000C' + (codeStash.length - 1) + '\u0000';
     });
 
-    // 2) protect inline math  $...$
+    // 2) protect math: first $$...$$ (inline block), then $...$
     const mathStash = [];
+    // $$...$$ inline (rare but possible)
+    text = text.replace(/\$\$([^$]+?)\$\$/g, function (_, m) {
+      mathStash.push({type: 'block', content: m});
+      return '\u0000M' + (mathStash.length - 1) + '\u0000';
+    });
+    // $...$ inline
     text = text.replace(/\$([^$\n]+?)\$/g, function (_, m) {
-      mathStash.push(m);
+      mathStash.push({type: 'inline', content: m});
       return '\u0000M' + (mathStash.length - 1) + '\u0000';
     });
 
@@ -160,7 +212,11 @@
 
     // restore math
     text = text.replace(/\u0000M(\d+)\u0000/g, function (_, i) {
-      return `<span class="math">${escapeHtml(mathStash[+i])}</span>`;
+      var m = mathStash[+i];
+      if (m.type === 'block') {
+        return '<span class="math-block-inline" data-math="' + escapeAttr(m.content) + '"></span>';
+      }
+      return '<span class="math-inline" data-math="' + escapeAttr(m.content) + '"></span>';
     });
 
     // restore inline code
@@ -228,7 +284,56 @@
         const codeText = codeLines.join('\n');
         const langClass = lang ? ` class="language-${escapeAttr(lang)}"` : '';
         const langAttr = lang ? ` data-lang="${escapeAttr(lang)}"` : '';
-        out.push(`<pre${langAttr}><code${langClass}>${highlightCode(codeText, lang)}</code></pre>`);
+        if (lang === 'mermaid') {
+          out.push('<div class="mermaid">' + escapeHtml(codeText) + '</div>');
+        } else {
+          out.push(`<pre${langAttr}><code${langClass}>${highlightCode(codeText, lang)}</code></pre>`);
+        }
+        continue;
+      }
+
+      // ----- block math $$ ... $$ -----
+      // single-line: $$formula$$
+      var blockMathSingle = line.match(/^\s*\$\$(.+?)\$\$\s*$/);
+      if (blockMathSingle) {
+        closeAllLists();
+        var formula = blockMathSingle[1].trim();
+        out.push('<div class="math-block" data-math="' + escapeAttr(formula) + '"></div>');
+        i++;
+        continue;
+      }
+      // multi-line $$  (opening $$ may have content on same line, closing $$ may too)
+      var blockMathOpen = line.match(/^\s*\$\$(\s*$|.+)/);
+      if (blockMathOpen) {
+        closeAllLists();
+        var mathLines = [];
+        var firstContent = blockMathOpen[1];
+        if (firstContent && firstContent.trim()) {
+          // $$content on the same line
+          // Check if the content also ends with $$ (single-line handled above, so this won't match)
+          mathLines.push(firstContent);
+        }
+        i++;
+        while (i < lines.length) {
+          var closingMatch = lines[i].match(/^(.*)\$\$\s*$/);
+          if (closingMatch !== null) {
+            // This line ends with $$ — it's the closing line
+            if (closingMatch[1].trim()) {
+              mathLines.push(closingMatch[1]);
+            }
+            i++;
+            break;
+          }
+          if (/^\s*\$\$\s*$/.test(lines[i])) {
+            // Line is just $$ — closing
+            i++;
+            break;
+          }
+          mathLines.push(lines[i]);
+          i++;
+        }
+        var formula = mathLines.join('\n').trim();
+        out.push('<div class="math-block" data-math="' + escapeAttr(formula) + '"></div>');
         continue;
       }
 
@@ -340,6 +445,7 @@
           if (/^\s*#{1,6}\s+/.test(nxt)) break;
           if (/^\s*>\s?/.test(nxt)) break;
           if (/^\s*```/.test(nxt)) break;
+          if (/^\s*\$\$/.test(nxt)) break;
           // continuation paragraph for current item
           out.push('<br/>' + renderInline(nxt.trim(), basePath));
           i++;
@@ -371,7 +477,8 @@
         !/^\s*```/.test(lines[i]) &&
         !/^\s*([-*_])\s*\1\s*\1[\s\1]*$/.test(lines[i]) &&
         !/^(\s*)([-*+])\s+/.test(lines[i]) &&
-        !/^(\s*)\d+\.\s+/.test(lines[i])
+        !/^(\s*)\d+\.\s+/.test(lines[i]) &&
+        !/^\s*\$\$/.test(lines[i])
       ) {
         buf.push(lines[i]);
         i++;
